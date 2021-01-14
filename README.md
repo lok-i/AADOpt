@@ -12,3 +12,15 @@
 * [A Novel Antenna Pattern Design Using Generative Adversarial Network](https://ieeexplore.ieee.org/document/8662012/)
 
 ## Repositories for Genetic algo and evolution strats:
+
+### ES:
+* [evostr](https://github.com/alirezamika/evostra)
+* [openai](https://github.com/openai/evolution-strategies-starter)
+
+### Genetic Algo:
+
+* [GeneticAlgorithmPython](https://github.com/ahmedfgad/GeneticAlgorithmPython)
+* [Genetic Algorithms with Python](https://github.com/handcraftsman/GeneticAlgorithmsWithPython)
+* [mchgenalg](https://github.com/chovanecm/python-genetic-algorithm)
+* [Genetic algorithm](https://github.com/kburnik/genetic-algorithm)
+
