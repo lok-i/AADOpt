@@ -8,11 +8,17 @@ from directivity import *
 
 class Antenna():
     def __init__(self,vector):
-        self._vector = np.array(vector)
+        if isinstance(vector,np.ndarray):
+            self._vector = vector
+        else:
+            self._vector = np.array(vector)
   
     def update_vector(self,vector):
-        self._vector = np.array(vector)
-  
+        if isinstance(vector,np.ndarray):
+            self._vector = vector
+        else:
+            self._vector = np.array(vector)
+              
     def get_azimulth_and_elevation(self):
         
         v1 = self._vector

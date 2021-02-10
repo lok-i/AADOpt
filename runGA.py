@@ -2,17 +2,18 @@
 
 import pygad
 from src.AntennaClass import Antenna
-
+import numpy as np
 
 AntennaGene = Antenna(0,0,0)
 function_inputs = [0,0,0] # the vector
-desired_output = [45,30] # Function output.
+desired_gain = 3 # Function output.
 
 def fitness_func(solution, solution_idx):
     # Calculating the fitness value of each solution in the current population.
     # The fitness function calulates the sum of products between each input and its corresponding weight.
-    c_azimuth,c_elevation = AntennaGene.get_azimulth_and_elevation(vector=solution)
-    fitness = 1.0 / np.abs(c_azimuth - desired_output[0]) + 1.0 / np.abs(c_elevation - desired_output[1])
+    AntennaGene.update_vector(solution)
+    c_Gain=AntennaGene.get_gain()
+    fitness = 1.0 / np.abs(c_Gain - desired_gain) 
     return fitness
 
 fitness_function = fitness_func
