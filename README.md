@@ -16,7 +16,12 @@
 
 * [A Novel Antenna Pattern Design Using Generative Adversarial Network](https://ieeexplore.ieee.org/document/8662012/)
 
-## Repositories for Genetic algo and evolution strats:
+## References and Resources:
+
+## Atenna Basics:
+
+* [Basic Antennas and their Raidiation patterns](https://www.usna.edu/ECE/ee434/Handouts/EE302%20Lesson%2013%20Antenna%20Fundamentals.pdf)
+* [^^ The math](https://its-wiki.no/images/2/2b/RadiationPattern.pdf)
 
 ### Blogs:
 * [6 part Blog of John Grant](https://johngrant.medium.com/antenna-arrays-and-python-introduction-8e3b612ecdfb)
