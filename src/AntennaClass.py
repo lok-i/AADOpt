@@ -4,6 +4,7 @@ import math
 # from src.patch import *
 
 from directivity import *
+from patch import *
 # from patch import *
 
 
@@ -30,14 +31,12 @@ class Antenna():
         a = np.degrees(np.arctan(v[0]/v[1])) # angle with positive y axis
         e = np.degrees(np.arctan(v[2]/v[1])) # 90 - angle with z azis, i.e. angle with the xy plane or commonly called as H-Plane
         '''
-        r = np.linalg.norm(self._vector)
-        theta = math.acos(self._vector[2]/r)
-        phi = math.atan2(self._vector[1],self._vector[0])
+        r, theta, phi = cart2sph1(self._vector[0], self._vector[1], self._vector[2])
 
         theta = np.degrees(theta) # elevation
         phi = np.degrees(phi) # azimuth
 
-        print('r = ',r,'azimuth = '+str(phi)+', elevation = '+str(theta))
+        # print('r = ',r,'azimuth = '+str(phi)+', elevation = '+str(theta))
         return phi,theta
 
     def get_gain(self):

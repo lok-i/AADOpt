@@ -188,16 +188,29 @@ if __name__ == "__main__":
 
 
     
-    freq = 14e9
-    Er = 3.66                                                           # RO4350B
-    h = 0.101e-3
-    W, L, h, Er = patch.DesignPatch(Er, h, freq)
+    # freq = 14e9
+    # Er = 3.66                                                           # RO4350B
+    # h = 0.101e-3
+    # W, L, h, Er = patch.DesignPatch(Er, h, freq)
+    # CalcDirectivity(100, patch.PatchFunction, freq, W, L, h, Er)
+    # fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
+    # patch.SurfacePlot(fields, freq, W, L, h, Er)
+
+    '''
+    W = 10.7e-3
+    L = 10.47e-3
+    h = 3e-3
+    Er = 2.5
+
+    print("\n\n")
     CalcDirectivity(100, patch.PatchFunction, freq, W, L, h, Er)
     fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
     patch.SurfacePlot(fields, freq, W, L, h, Er)
-
+    '''
+    
+    freq = 14e9
     W = 10.7e-3
-    L = 10.47e-3
+    L = 20.47e-3
     h = 3e-3
     Er = 2.5
 
