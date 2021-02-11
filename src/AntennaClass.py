@@ -1,4 +1,5 @@
 import numpy as np
+import math
 # from src.directivity import *
 # from src.patch import *
 
@@ -22,14 +23,22 @@ class Antenna():
     def get_azimulth_and_elevation(self):
         
         v1 = self._vector
+        '''
         v2 = np.array([0,0,0])
         v = v1 - v2
 
         a = np.degrees(np.arctan(v[0]/v[1])) # angle with positive y axis
         e = np.degrees(np.arctan(v[2]/v[1])) # 90 - angle with z azis, i.e. angle with the xy plane or commonly called as H-Plane
+        '''
+        r = np.linalg.norm(self._vector)
+        theta = math.acos(self._vector[2]/r)
+        phi = math.atan2(self._vector[1],self._vector[0])
 
-        # print('azimuth = '+str(a)+', elevation = '+str(e))
-        return a,e
+        theta = np.degrees(theta) # elevation
+        phi = np.degrees(phi) # azimuth
+
+        print('r = ',r,'azimuth = '+str(phi)+', elevation = '+str(theta))
+        return phi,theta
 
     def get_gain(self):
         azimuth,elevation = self.get_azimulth_and_elevation()
@@ -40,6 +49,6 @@ class Antenna():
 
 if __name__ == "__main__":
     a = Antenna([0,0,1])
-    a.update_vector([0.5,0.5,0.38])
+    a.update_vector([1.0,1.0,1.0])
     a.get_azimulth_and_elevation()
     a.get_gain()
