@@ -1,19 +1,23 @@
 # the antenna version
 
 import pygad
-from src.AntennaClass import Antenna
+from src.AntennaClass import *
 import numpy as np
 
-AntennaGene = Antenna(0,0,0)
-function_inputs = [0,0,0] # the vector
-desired_gain = 3 # Function output.
+PathAntenaGene = PatchAntenna(efficiency=90,frequency_of_operation= 14e9)
+
+function_inputs = [0.0,0.0,0.0,0.0] # w,l,h,Er
+desired_target = [7.240620730954699, 68, 0] # Gain, Theta, Phi -> targets
 
 def fitness_func(solution, solution_idx):
     # Calculating the fitness value of each solution in the current population.
     # The fitness function calulates the sum of products between each input and its corresponding weight.
-    AntennaGene.update_vector(solution)
-    c_Gain=AntennaGene.get_gain()
-    fitness = 1.0 / np.abs(c_Gain - desired_gain) 
+    PathAntenaGene.update_parameters(solution)
+    c_Gain,c_Th,c_Ph = PathAntenaGene.calculate_max_gain()
+    fitness = 1.0 / np.abs(c_Gain - desired_target[0]) + \
+              1.0 / np.abs(c_Th - desired_target[1]) + \
+              1.0 / np.abs(c_Ph - desired_target[2]) 
+    
     return fitness
 
 fitness_function = fitness_func
@@ -27,8 +31,8 @@ num_parents_mating = 7 # Number of solutions to be selected as parents in the ma
 sol_per_pop = 50 # Number of solutions in the population.
 num_genes = len(function_inputs)
 
-init_range_low = -10
-init_range_high = 10
+init_range_low =  [1.0,     10.00e-3, 1e-3, 1]
+init_range_high = [20.0e-3, 30.00e-3, 5e-3, 10]
 
 parent_selection_type = "sss" # Type of parent selection.
 keep_parents = 7 # Number of parents to keep in the next population. -1 means keep all parents and 0 means keep nothing.
@@ -74,7 +78,8 @@ print("Parameters of the best solution : {solution}".format(solution=solution))
 print("Fitness value of the best solution = {solution_fitness}".format(solution_fitness=solution_fitness))
 print("Index of the best solution : {solution_idx}".format(solution_idx=solution_idx))
 
-prediction =  AntennaGene.get_azimulth_and_elevation(vector=solution)
+PathAntenaGene.update_parameters(solution)
+prediction =  PathAntenaGene.calculate_max_gain()
 
 print("Predicted output based on the best solution : {prediction}".format(prediction=prediction))
 

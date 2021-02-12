@@ -5,8 +5,8 @@ Also includes some examples that are used to check result.
 """
 from math import sin, sqrt, pi, log10, radians
 import numpy as np
-# from src.patch import *
-import patch
+from src.patch import *
+# import patch
 
 
 def SqrtSinPattern(Theta, Phi, *args):
@@ -132,7 +132,7 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     %      x
     %
     """
-    print("Calculating Directivity for " + RadPatternFunction.__name__)
+    # print("Calculating Directivity for " + RadPatternFunction.__name__)
 
     deltheta = 2                                                                # Step value of theta (Deg)
     delphi = 2                                                                  # Step value for phi (Deg)
@@ -162,18 +162,21 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
 
     directivity_lin = Pmax / (Psum / (4 * pi))                                                              # Directivity (linear ratio)
     directivity_dBi = 10 * log10(directivity_lin)                                                           # Directivity (dB wrt isotropic)
-
+    Gmax = directivity_dBi
     if Efficiency < 100:                                                                                    # Gain case
         dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
+        '''
         print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
         print("Efficiency = " + str(Efficiency) + "%")
         print("Gain = " + str(directivity_dBi) + "dB")
-    else:                                                                                                   # Directivity case
-        print("Directivity = " + str(directivity_dBi) + "dBi")
+        '''
+    else:
+        pass                                                                                                   # Directivity case
+        # print("Directivity = " + str(directivity_dBi) + "dBi")
 
-    print("At Theta = " + str(Thmax) + ", Phi = " + str(Phmax))
+    # print("At Theta = " + str(Thmax) + ", Phi = " + str(Phmax))
 
-    return Thmax, Phmax
+    return Gmax,Thmax, Phmax
 
 
 
@@ -215,7 +218,7 @@ if __name__ == "__main__":
     Er = 2.5
 
     print("\n\n")
-    CalcDirectivity(100, patch.PatchFunction, freq, W, L, h, Er)
+    print(CalcDirectivity(90, patch.PatchFunction, freq, W, L, h, Er))
     fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
     patch.SurfacePlot(fields, freq, W, L, h, Er)
     
