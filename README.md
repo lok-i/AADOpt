@@ -18,6 +18,13 @@
 
 ## References and Resources:
 
+## ReflectArray Antenna
+
+* [Curve Learning](https://www.hindawi.com/journals/ijap/2016/8764967/)
+* [Param Learning](https://www.tandfonline.com/doi/abs/10.1080/02726343.2012.645423?journalCode=uemg20)
+* [Hybrid evol](https://ieeexplore.ieee.org/document/1629608)
+
+
 ## Atenna Basics:
 
 * [Basic Antennas and their Raidiation patterns](https://www.usna.edu/ECE/ee434/Handouts/EE302%20Lesson%2013%20Antenna%20Fundamentals.pdf)
