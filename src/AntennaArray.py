@@ -2,7 +2,7 @@ import numpy as np
 import math
 import sys
 from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePlot
-
+from src.directivity import CalcDirectivity
 
 class PatchAntennaArray():
     def __init__(self,n_patches, Freq=14e9,Er=2.5,IdenticalPatches=True,I_W=10.7e-3,I_L=10.47e-3,I_h=3e-3):
@@ -14,6 +14,7 @@ class PatchAntennaArray():
         self._freq = Freq
         self._er = Er
         self.element_array[:,3] = 1. #default amplitude is 1
+        self.c_radiation_pattern = []
         if IdenticalPatches:
             self.element_array[:,5] = I_W
             self.element_array[:,6] = I_L
@@ -75,8 +76,14 @@ class PatchAntennaArray():
                         elementSum += element[3] * patchFunction * math.e ** ((relativePhase + element[4]) * 1j)                        # Element contribution = Amp * e^j(Phase + Phase Weight)
 
                 arrayFactor[phi][theta] = elementSum.real
-
-        return arrayFactor # the pattern to plot itself
+        
+        self.c_radiation_pattern = arrayFactor
+    
+    def RadPatternFunction(self,thetaInDeg, phiInDeg):
+        if len(self.c_radiation_pattern) == 0:
+            raise Exception("Radiation Pattern hasn't been calculated. call CalculateFieldSumPatch() ")
+        else:
+            return self.c_radiation_pattern[phiInDeg][thetaInDeg]
 
 
 if __name__ == "__main__":
@@ -88,8 +95,12 @@ if __name__ == "__main__":
     #     AnArr.set_element_prop(i,A=(i+1))
 
     print(AnArr.element_array)
-    ArrayFactorXFields = AnArr.CalculateFieldSumPatch()
-    SurfacePlot(Fields=ArrayFactorXFields)
+    AnArr.CalculateFieldSumPatch()
+    CalcDirectivity(Efficiency=100,
+                    RadPatternFunction=AnArr.RadPatternFunction,
+                    theta_range=[0,95],
+                    )
+    SurfacePlot(Fields=AnArr.c_radiation_pattern)
 
 
 
