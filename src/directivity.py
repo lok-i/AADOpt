@@ -5,8 +5,8 @@ Also includes some examples that are used to check result.
 """
 from math import sin, sqrt, pi, log10, radians
 import numpy as np
-from src.patch import *
-# import patch
+# from src.patch import *
+import patch
 
 
 def SqrtSinPattern(Theta, Phi, *args):
@@ -103,9 +103,6 @@ def CalcDirectivityAt(Efficiency, RadPatternFunction,g_theta=0.0,g_phi=0.0, *arg
 
     return Directivity,Gain
 
-
-
-
 def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     """
     Based on calc_directivity.m from ArrayCalc.
@@ -132,7 +129,7 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     %      x
     %
     """
-    # print("Calculating Directivity for " + RadPatternFunction.__name__)
+    print("Calculating Directivity for " + RadPatternFunction.__name__)
 
     deltheta = 2                                                                # Step value of theta (Deg)
     delphi = 2                                                                  # Step value for phi (Deg)
@@ -165,14 +162,14 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     Gmax = directivity_dBi
     if Efficiency < 100:                                                                                    # Gain case
         dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
-        '''
+        
         print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
         print("Efficiency = " + str(Efficiency) + "%")
         print("Gain = " + str(directivity_dBi) + "dB")
-        '''
+        
     else:
         pass                                                                                                   # Directivity case
-        # print("Directivity = " + str(directivity_dBi) + "dBi")
+        print("Directivity = " + str(directivity_dBi) + "dBi")
 
     # print("At Theta = " + str(Thmax) + ", Phi = " + str(Phmax))
 
@@ -191,7 +188,7 @@ if __name__ == "__main__":
 
 
     
-    # freq = 14e9
+    freq = 14e9
     # Er = 3.66                                                           # RO4350B
     # h = 0.101e-3
     # W, L, h, Er = patch.DesignPatch(Er, h, freq)
@@ -199,7 +196,7 @@ if __name__ == "__main__":
     # fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
     # patch.SurfacePlot(fields, freq, W, L, h, Er)
 
-    '''
+    
     W = 10.7e-3
     L = 10.47e-3
     h = 3e-3
@@ -209,7 +206,7 @@ if __name__ == "__main__":
     CalcDirectivity(100, patch.PatchFunction, freq, W, L, h, Er)
     fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
     patch.SurfacePlot(fields, freq, W, L, h, Er)
-    '''
+    
     
     freq = 14e9
     W = 10.7e-3

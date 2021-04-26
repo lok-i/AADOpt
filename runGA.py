@@ -1,5 +1,4 @@
 # the antenna version
-
 import pygad
 from src.AntennaClass import *
 import numpy as np

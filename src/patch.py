@@ -110,7 +110,6 @@ def GetPatchFields(PhiStart, PhiStop, ThetaStart, ThetaStop, Freq, W, L, h, Er):
 
     return fields
 
-
 def PatchEHPlanePlot(Freq, W, L, h, Er, isLog=True):
     """
     Plot 2D plots showing E-field for E-plane (phi = 0°) and the H-plane (phi = 90°).
@@ -142,8 +141,7 @@ def PatchEHPlanePlot(Freq, W, L, h, Er, isLog=True):
 
     return fields                                                                                               # Return the calculated fields
 
-
-def SurfacePlot(Fields, Freq, W, L, h, Er):
+def SurfacePlot(Fields, Freq=None, W=None, L=None, h=None, Er=None):
     """Plots 3D surface plot over given theta/phi range in Fields by calculating cartesian coordinate equivalent of spherical form."""
 
     print("Processing SurfacePlot...")
@@ -171,9 +169,9 @@ def SurfacePlot(Fields, Freq, W, L, h, Er):
     ax.plot_surface(X, Y, Z, color='b')                                                                         # Plot surface
     plt.ylabel('Y')
     plt.xlabel('X')                                                                                             # Plot formatting
-    plt.title("Patch: \nW=" + str(W) + " \nL=" + str(L) +  "\nEr=" + str(Er) + " h=" + str(h) + " \n@" + str(Freq) + "Hz")
+    if W!=None:
+        plt.title("Patch: \nW=" + str(W) + " \nL=" + str(L) +  "\nEr=" + str(Er) + " h=" + str(h) + " \n@" + str(Freq) + "Hz")
     plt.show()
-
 
 def DesignPatch(Er, h, Freq):
     """
