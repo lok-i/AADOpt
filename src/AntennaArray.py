@@ -1,35 +1,33 @@
 import numpy as np
 import math
+import sys
 from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePlot
 
 
-class ArrayAntenna():
+class PatchAntennaArray():
+    def __init__(self,n_patches, Freq=14e9,Er=2.5,IdenticalPatches=True,I_W=10.7e-3,I_L=10.47e-3,I_h=3e-3):
 
-    def ArrayFactor(self,ElementArray, Freq):
-        """
-        Summation of field contributions from each element in array, at frequency freq at theta 0°-95°, phi 0°-360°.
-        Element = xPos, yPos, zPos, ElementAmplitude, ElementPhaseWeight
-        Returns arrayFactor[theta, phi, elementSum]
-        """
+        if n_patches <= 0:
+            raise Exception("n_patches cannot be <=0")
+        self._n_patches = n_patches
+        self.element_array = np.zeros((n_patches,8))
+        self._freq = Freq
+        self._er = Er
+        self.element_array[:,3] = 1. #default amplitude is 1
+        if IdenticalPatches:
+            self.element_array[:,5] = I_W
+            self.element_array[:,6] = I_L
+            self.element_array[:,7] = I_h
+        
+    def set_element_prop(self,element_id,pos=[0.,0.,0.],A=1,beta=0.0):
+        # to add geometric properties aswell later on
+        self.element_array[element_id][0] = pos[0]
+        self.element_array[element_id][1] = pos[1]
+        self.element_array[element_id][2] = pos[2]
+        self.element_array[element_id][3] = A
+        self.element_array[element_id][4] = beta
 
-        arrayFactor = np.ones((360, 95))
-
-        Lambda = 3e8 / Freq
-
-        for theta in range(95):
-            for phi in range(360):                                                                                                      # For all theta/phi positions
-                elementSum = 1e-9 + 0j
-
-                for element in ElementArray:                                                                                            # Summation of each elements contribution at theta/phi position.
-                    relativePhase = CalculateRelativePhase(element, Lambda, math.radians(theta), math.radians(phi))                     # Find relative phase for current element
-                    elementSum += element[3] * math.e ** ((relativePhase + element[4]) * 1j)                                            # Element contribution = Amp * e^j(Phase + Phase Weight)
-
-                arrayFactor[phi][theta] = elementSum.real
-
-        return arrayFactor
-
-    
-    def CalculateRelativePhase(self,Element, Lambda, theta, phi):
+    def CalculateRelativePhase(self,element, Lambda, theta, phi):
         """
         Incident wave treated as plane wave. Phase at element is referred to phase of plane wave at origin.
         Element = xPos, yPos, zPos, ElementAmplitude, ElementPhaseWeight
@@ -38,16 +36,15 @@ class ArrayAntenna():
         """
         phaseConstant = (2 * math.pi / Lambda)
 
-        xVector = Element[0] * math.sin(theta) * math.cos(phi)
-        yVector = Element[1] * math.sin(theta) * math.sin(phi)
-        zVector = Element[2] * math.cos(theta)
+        xVector = element[0] * math.sin(theta) * math.cos(phi)
+        yVector = element[1] * math.sin(theta) * math.sin(phi)
+        zVector = element[2] * math.cos(theta)
 
         phaseOfIncidentWaveAtElement = phaseConstant * (xVector + yVector + zVector)
 
         return phaseOfIncidentWaveAtElement
 
-
-    def FieldSumPatch(self,ElementArray, Freq, W, L, h, Er):
+    def CalculateFieldSumPatch(self):
         """
         Summation of field contributions from each patch element in array, at frequency freq for theta 0°-95°, phi 0°-360°.
         Element = xPos, yPos, zPos, ElementAmplitude, ElementPhaseWeight
@@ -56,25 +53,25 @@ class ArrayAntenna():
         
         arrayFactor = np.ones((360, 95))
 
-        Lambda = 3e8 / Freq
-
+        Lambda = 3e8 / self._freq
+        print("Calulating Fields ...")
         for theta in range(95):
             for phi in range(360):                                                                                                      # For all theta/phi positions
                 elementSum = 1e-9 + 0j
 
                 xff, yff, zff = sph2cart1(999, math.radians(theta), math.radians(phi))                                                  # Find point in far field
 
-                for element in ElementArray:                                                                                            # For each element in array, find local theta/phi, calculate field contribution and add to summation for point
+                for element in self.element_array:
                     xlocal = xff - element[0]
                     ylocal = yff - element[1]                                                                                           # Calculate local position in cartesian
                     zlocal = zff - element[2]
-
                     r, thetaLocal, phiLocal = cart2sph1(xlocal, ylocal, zlocal)                                                         # Convert local position to spherical
 
-                    patchFunction = PatchFunction(math.degrees(thetaLocal), math.degrees(phiLocal), Freq, W, L, h, Er)            # Patch element pattern for local theta, phi
+                    patchFunction = PatchFunction(math.degrees(thetaLocal), math.degrees(phiLocal),                                     # Patch element pattern for local theta, phi
+                                    self._freq, element[5], element[6], element[7], self._er)            
 
                     if patchFunction != 0:                                                                                              # Sum each elements contribution
-                        relativePhase = self.CalculateRelativePhase(element, Lambda, math.radians(theta), math.radians(phi))                 # Find relative phase for current element
+                        relativePhase = self.CalculateRelativePhase(element,Lambda, math.radians(theta), math.radians(phi))                 # Find relative phase for current element
                         elementSum += element[3] * patchFunction * math.e ** ((relativePhase + element[4]) * 1j)                        # Element contribution = Amp * e^j(Phase + Phase Weight)
 
                 arrayFactor[phi][theta] = elementSum.real
@@ -85,25 +82,16 @@ class ArrayAntenna():
 if __name__ == "__main__":
     
     # W,L,h,Er
-    ArrAn = ArrayAntenna()
+    AnArr = PatchAntennaArray(n_patches=2,Freq=14e9,Er=2.5,IdenticalPatches=True)
 
-    elements_at = [[ 0.0,0.,0.,1.,0.5*np.pi],
-                #    [ 0.005,0.,0.,1.,0.5*np.pi],
-                #    [ 0.,1.,0.,1.,1.5*np.pi],
-                #    [ 0.,-1.,0.,1.,np.pi]
-                   ]
-    _params = [10.7e-3,10.47e-3,3e-3,2.5]
-    ArrayFactor = ArrAn.FieldSumPatch(ElementArray=elements_at, 
-                                      Freq=14e9, 
-                                      W=_params[0],
-                                      L=_params[1],
-                                      h=_params[2],
-                                      Er=_params[3])
-    
-    phi = np.arange(0,360,1)
-    theta = np.arange(0,95,1)
+    # for i in range(AnArr._n_patches):
+    #     AnArr.set_element_prop(i,A=(i+1))
+
+    print(AnArr.element_array)
+    ArrayFactorXFields = AnArr.CalculateFieldSumPatch()
+    SurfacePlot(Fields=ArrayFactorXFields)
 
 
-    ArrayFactor = np.array(ArrayFactor)
-    print("ArrayFac:",ArrayFactor.shape)
-    SurfacePlot(Fields=ArrayFactor)
+
+
+
