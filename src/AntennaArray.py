@@ -3,7 +3,7 @@ import math
 import sys
 from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePlot
 from src.directivity import CalcDirectivity
-
+import time
 class PatchAntennaArray():
     def __init__(self,n_patches,param_range,Freq=14e9,Er=2.5):
 
@@ -40,9 +40,7 @@ class PatchAntennaArray():
             for j in self.params_to_opt_indices:
                 self.element_array[i,j] = opt_param_vector[nth_element]
                 nth_element+=1
-
-
-    
+   
     def set_element_prop(self,element_id,pos=[0.,0.,0.],A=1,beta=0.0):
         # to add geometric properties aswell later on
         self.element_array[element_id][0] = pos[0]
@@ -68,7 +66,7 @@ class PatchAntennaArray():
 
         return phaseOfIncidentWaveAtElement
 
-    def CalculateFieldSumPatch(self):
+    def CalculateFieldSumPatch(self,dAngleInDeg=2):
         """
         Summation of field contributions from each patch element in array, at frequency freq for theta 0°-95°, phi 0°-360°.
         Element = xPos, yPos, zPos, ElementAmplitude, ElementPhaseWeight
@@ -79,8 +77,8 @@ class PatchAntennaArray():
 
         Lambda = 3e8 / self._freq
         # print("Calulating Fields ...")
-        for theta in range(95):
-            for phi in range(360):                                                                                                      # For all theta/phi positions
+        for theta in range(0,95,dAngleInDeg):
+            for phi in range(0,360,dAngleInDeg):                                                                                                      # For all theta/phi positions
                 elementSum = 1e-9 + 0j
 
                 xff, yff, zff = sph2cart1(999, math.radians(theta), math.radians(phi))                                                  # Find point in far field
@@ -108,10 +106,11 @@ class PatchAntennaArray():
         else:
             return self.c_radiation_pattern[phiInDeg][thetaInDeg]
 
-    def get_gain(self):
+    def get_gain(self,dAngleInDeg=2):
         Gain,_,_ = CalcDirectivity(Efficiency=100,
                     RadPatternFunction=self.RadPatternFunction,
                     theta_range=[0,95],
+                    dAngleInDeg=2,
                     to_print=False
                     )
         return Gain
@@ -127,34 +126,38 @@ class PatchAntennaArray():
 if __name__ == "__main__":
     
     # W,L,h,Er
-
+    delta_angle_for_integration = 1
     param_opt_range = {'x':{'greater_than':0,'lesser_than':10},
-                    'y':{'greater_than':-5,'lesser_than':0},
-                    'z':{'equal_to':0},
-                    'A':{'greater_than':0.,'lesser_than':5.},
-                    'beta':{'equal_to':0.},
-                    'W':{'equal_to':10.7e-3},
-                    'L':{'equal_to':10.47e-3},
-                    'h':{'equal_to':3e-3},}
+                       'y':{'greater_than':-5,'lesser_than':0},
+                       'z':{'equal_to':0},
+                       'A':{'greater_than':0.,'lesser_than':5.},
+                       'beta':{'equal_to':0.},
+                       'W':{'equal_to':10.7e-3},
+                       'L':{'equal_to':10.47e-3},
+                       'h':{'equal_to':3e-3},}
 
     PatchArray = PatchAntennaArray(n_patches=2,
-                                Freq=14e9,
-                                Er=2.5,
-                                param_range=param_opt_range)
+                                  Freq=14e9,
+                                  Er=2.5,
+                                  param_range=param_opt_range)
     print('Opt_values_range:\n',len(PatchArray.params_to_opt_range))
     # print('Max_opt_values:',PatchArray.params_to_opt_range[:][1])
 
     print('initial_elements:\n',PatchArray.element_array)
-    update_to = [0.,0.,1.,0.,0.,1.]
+    update_to = [0.005,0.,1.,0.,0.,1.]
     PatchArray.update_array_params(update_to)
     print('updates_elements:\n',PatchArray.element_array)
 
 
     # for i in range(PatchArray._n_patches):
     #     PatchArray.set_element_prop(i,A=(i+1))
+    start = time.time()
+    PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
+    print(PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
+    end = time.time()
 
-    PatchArray.CalculateFieldSumPatch()
-    print(PatchArray.get_gain())
+    print("TimeTaken:",(end-start),'s')
+
     PatchArray.plot_radiation_pattern()
 
 

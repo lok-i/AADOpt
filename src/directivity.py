@@ -42,7 +42,7 @@ def xfrange(start, stop, step):
         yield start + i * step
         i += 1
 
-def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],phi_range=[0,360],to_print=False):
+def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],phi_range=[0,360],to_print=False,dAngleInDeg=2):
     """
     Based on calc_directivity.m from ArrayCalc.
     Calculates peak directivity in dBi value using numerical integration.
@@ -70,8 +70,8 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],ph
     """
     
 
-    deltheta = 2                                                                # Step value of theta (Deg)
-    delphi = 2                                                                  # Step value for phi (Deg)
+    deltheta = dAngleInDeg                                                              # Step value of theta (Deg)
+    delphi = dAngleInDeg                                                              # Step value for phi (Deg)
 
     dth = radians(deltheta)
     dph = radians(delphi)
