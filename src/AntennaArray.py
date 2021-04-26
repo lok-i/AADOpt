@@ -5,7 +5,7 @@ from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePl
 from src.directivity import CalcDirectivity
 
 class PatchAntennaArray():
-    def __init__(self,n_patches, Freq=14e9,Er=2.5,IdenticalPatches=True,I_W=10.7e-3,I_L=10.47e-3,I_h=3e-3):
+    def __init__(self,n_patches,param_range,Freq=14e9,Er=2.5):
 
         if n_patches <= 0:
             raise Exception("n_patches cannot be <=0")
@@ -13,13 +13,36 @@ class PatchAntennaArray():
         self.element_array = np.zeros((n_patches,8))
         self._freq = Freq
         self._er = Er
-        self.element_array[:,3] = 1. #default amplitude is 1
         self.c_radiation_pattern = []
-        if IdenticalPatches:
-            self.element_array[:,5] = I_W
-            self.element_array[:,6] = I_L
-            self.element_array[:,7] = I_h
         
+        param_to_array_index = {key:index for (key,index) in zip(param_range.keys(),np.arange(8)) }
+        # min_limit = {key:0 for key in param_range.keys() }
+        # max_limit = {key:0 for key in param_range.keys() }
+        
+        params_to_opt_min = []
+        params_to_opt_max = []
+        self.params_to_opt_indices = []
+        for key in param_range.keys():
+            if 'equal_to' in param_range[key].keys():
+                self.element_array[:,param_to_array_index[key]] = param_range[key]['equal_to']
+            else:
+                params_to_opt_min.append(param_range[key]['greater_than'])
+                params_to_opt_max.append(param_range[key]['lesser_than'])
+                self.params_to_opt_indices.append(param_to_array_index[key])
+
+        self.params_to_opt_range = [[_min,_max] for (_min,_max) in zip(params_to_opt_min,params_to_opt_max)]*n_patches
+        self.opt_param_vector = np.zeros(len(self.params_to_opt_range))
+
+    def update_array_params(self,opt_param_vector):
+
+        nth_element = 0
+        for i in range(self._n_patches):
+            for j in self.params_to_opt_indices:
+                self.element_array[i,j] = opt_param_vector[nth_element]
+                nth_element+=1
+
+
+    
     def set_element_prop(self,element_id,pos=[0.,0.,0.],A=1,beta=0.0):
         # to add geometric properties aswell later on
         self.element_array[element_id][0] = pos[0]
@@ -85,23 +108,54 @@ class PatchAntennaArray():
         else:
             return self.c_radiation_pattern[phiInDeg][thetaInDeg]
 
+    def get_gain(self):
+        Gain,_,_ = CalcDirectivity(Efficiency=100,
+                    RadPatternFunction=self.RadPatternFunction,
+                    theta_range=[0,95],
+                    to_print=False
+                    )
+        return Gain
+
+    def plot_radiation_pattern(self):
+
+        if len(self.c_radiation_pattern) == 0:
+            raise Exception("Radiation Pattern hasn't been calculated. call CalculateFieldSumPatch() ")
+        else:
+            SurfacePlot(Fields=self.c_radiation_pattern)
+
 
 if __name__ == "__main__":
     
     # W,L,h,Er
-    AnArr = PatchAntennaArray(n_patches=2,Freq=14e9,Er=2.5,IdenticalPatches=True)
 
-    # for i in range(AnArr._n_patches):
-    #     AnArr.set_element_prop(i,A=(i+1))
+    param_opt_range = {'x':{'greater_than':0,'lesser_than':10},
+                    'y':{'greater_than':-5,'lesser_than':0},
+                    'z':{'equal_to':0},
+                    'A':{'greater_than':0.,'lesser_than':5.},
+                    'beta':{'equal_to':0.},
+                    'W':{'equal_to':10.7e-3},
+                    'L':{'equal_to':10.47e-3},
+                    'h':{'equal_to':3e-3},}
 
-    print(AnArr.element_array)
-    AnArr.CalculateFieldSumPatch()
-    CalcDirectivity(Efficiency=100,
-                    RadPatternFunction=AnArr.RadPatternFunction,
-                    theta_range=[0,95],
-                    )
-    SurfacePlot(Fields=AnArr.c_radiation_pattern)
+    PatchArray = PatchAntennaArray(n_patches=2,
+                                Freq=14e9,
+                                Er=2.5,
+                                param_range=param_opt_range)
+    print('Opt_values_range:\n',len(PatchArray.params_to_opt_range))
+    # print('Max_opt_values:',PatchArray.params_to_opt_range[:][1])
 
+    print('initial_elements:\n',PatchArray.element_array)
+    update_to = [0.,0.,1.,0.,0.,1.]
+    PatchArray.update_array_params(update_to)
+    print('updates_elements:\n',PatchArray.element_array)
+
+
+    # for i in range(PatchArray._n_patches):
+    #     PatchArray.set_element_prop(i,A=(i+1))
+
+    PatchArray.CalculateFieldSumPatch()
+    print(PatchArray.get_gain())
+    PatchArray.plot_radiation_pattern()
 
 
 

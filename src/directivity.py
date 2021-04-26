@@ -42,7 +42,7 @@ def xfrange(start, stop, step):
         yield start + i * step
         i += 1
 
-def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],phi_range=[0,360]):
+def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],phi_range=[0,360],to_print=False):
     """
     Based on calc_directivity.m from ArrayCalc.
     Calculates peak directivity in dBi value using numerical integration.
@@ -99,16 +99,18 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],ph
     directivity_lin = Pmax / (Psum / (4 * pi))                                                              # Directivity (linear ratio)
     directivity_dBi = 10 * log10(directivity_lin)                                                           # Directivity (dB wrt isotropic)
     Gmax = directivity_dBi
-    if Efficiency < 100:                                                                                    # Gain case
-        dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
-        
-        print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
-        print("Efficiency = " + str(Efficiency) + "%")
-        print("Gain = " + str(directivity_dBi) + "dB")
-        
-    else:
-        pass                                                                                                   # Directivity case
-        print("Directivity = " + str(directivity_dBi) + "dBi")
+    
+    if to_print:
+        if Efficiency < 100:                                                                                    # Gain case
+            dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
+            
+            print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
+            print("Efficiency = " + str(Efficiency) + "%")
+            print("Gain = " + str(directivity_dBi) + "dB")
+            
+        else:
+            pass                                                                                                   # Directivity case
+            print("Directivity = " + str(directivity_dBi) + "dBi")
 
     # print("At Theta = " + str(Thmax) + ", Phi = " + str(Phmax))
 
