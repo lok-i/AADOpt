@@ -3,9 +3,9 @@ import numpy
 from src.AntennaArray import PatchAntennaArray
 
 
-param_opt_range = {'x':{'greater_than':0,'lesser_than':10},
-                   'y':{'greater_than':-5,'lesser_than':0},
-                   'z':{'equal_to':0},
+param_opt_range = {'x':{'equal_to':0.},
+                   'y':{'equal_to':0.},
+                   'z':{'equal_to':0.},
                    'A':{'greater_than':0.,'lesser_than':5.},
                    'beta':{'equal_to':0.},
                    'W':{'equal_to':10.7e-3},
@@ -28,7 +28,8 @@ print('Opt_values_range:\n',PatchArray.params_to_opt_range)
 def fitness_func(solution, solution_idx):
     # Calculating the fitness value of each solution in the current population.
     # The fitness function calulates the sum of products between each input and its corresponding weight.
-    print("Solution:",solution)
+    # print("Solution:",solution)
+    PatchArray.CalculateFieldSumPatch()
     PatchArray.update_array_params(solution)
     fitness = PatchArray.get_gain()
     return fitness
@@ -43,8 +44,11 @@ num_parents_mating = 20 # Number of solutions to be selected as parents in the m
 # 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
 sol_per_pop = 100 # Number of solutions in the population.
 num_genes = len(PatchArray.params_to_opt_range)
-gene_ranges = PatchArray.params_to_opt_range
-
+gene_ranges = [numpy.arange(start=p_2_opt_range[0],
+                             stop=p_2_opt_range[1],
+                             step=(p_2_opt_range[1]-p_2_opt_range[0])/10.).tolist()
+               for p_2_opt_range in PatchArray.params_to_opt_range  ]
+print(gene_ranges)
 # init_range_low = -1.#[2,-2,-2,-2,-2,-2]
 # init_range_high = 1.#[5,5,5,5,5,5]
 
@@ -78,7 +82,7 @@ ga_instance = pygad.GA(num_generations=num_generations,
                        crossover_type=crossover_type,
                        mutation_type=mutation_type,
                        mutation_percent_genes=mutation_percent_genes,
-                      #  on_generation=callback_generation
+                       on_generation=callback_generation,
                        gene_space = gene_ranges,
                        )
 

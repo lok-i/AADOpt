@@ -6,7 +6,7 @@ Also includes some examples that are used to check result.
 from math import sin, sqrt, pi, log10, radians
 import numpy as np
 # from src.patch import *
-import patch
+import src.patch as patch
 
 
 def SqrtSinPattern(Theta, Phi, *args):
@@ -68,7 +68,7 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],ph
     %      x
     %
     """
-    print("Calculating Directivity for " + RadPatternFunction.__name__)
+    
 
     deltheta = 2                                                                # Step value of theta (Deg)
     delphi = 2                                                                  # Step value for phi (Deg)
@@ -101,6 +101,7 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],ph
     Gmax = directivity_dBi
     
     if to_print:
+        print("Calculating Directivity for " + RadPatternFunction.__name__)
         if Efficiency < 100:                                                                                    # Gain case
             dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
             

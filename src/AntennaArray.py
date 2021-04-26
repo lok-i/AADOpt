@@ -78,7 +78,7 @@ class PatchAntennaArray():
         arrayFactor = np.ones((360, 95))
 
         Lambda = 3e8 / self._freq
-        print("Calulating Fields ...")
+        # print("Calulating Fields ...")
         for theta in range(95):
             for phi in range(360):                                                                                                      # For all theta/phi positions
                 elementSum = 1e-9 + 0j
