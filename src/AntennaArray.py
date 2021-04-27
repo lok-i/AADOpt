@@ -3,7 +3,7 @@ import math
 import sys
 from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePlot
 from src.directivity import CalcDirectivity
-import src.vis_patch as vis_patch
+# import src.vis_patch as vis_patch
 import time
 class PatchAntennaArray():
     def __init__(self,n_patches,param_range,Freq=14e9,Er=2.5):
@@ -23,6 +23,8 @@ class PatchAntennaArray():
         params_to_opt_min = []
         params_to_opt_max = []
         self.params_to_opt_indices = []
+        print('Num. of Patches:',self._n_patches)
+        print('Params being optimized:')
         for key in param_range.keys():
             if 'equal_to' in param_range[key].keys():
                 self.element_array[:,param_to_array_index[key]] = param_range[key]['equal_to']
@@ -30,9 +32,9 @@ class PatchAntennaArray():
                 params_to_opt_min.append(param_range[key]['greater_than'])
                 params_to_opt_max.append(param_range[key]['lesser_than'])
                 self.params_to_opt_indices.append(param_to_array_index[key])
+                print('\t',param_range[key]['greater_than'],'<',key,'<',param_range[key]['lesser_than'])
 
         self.params_to_opt_range = [[_min,_max] for (_min,_max) in zip(params_to_opt_min,params_to_opt_max)]*n_patches
-        self.opt_param_vector = np.zeros(len(self.params_to_opt_range))
 
     def update_array_params(self,opt_param_vector):
 

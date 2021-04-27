@@ -51,6 +51,14 @@ def PatchFunction(thetaInDeg, phiInDeg, Freq, W, L, h, Er):
 
     if phi == 0:
         phi = 1e-9
+    # print(W)
+
+    if W < 1.e-3:
+        W = 1.0e-3
+    if h < 1.e-3:
+        h = 1.0e-3    
+    if L < 1.e-3:
+        L = 1.0e-3
 
     Ereff = ((Er + 1) / 2) + ((Er - 1) / 2) * (1 + 12 * (h / W)) ** -0.5        # Calculate effictive dielectric constant for microstrip line of width W on dielectric material of constant Er
 

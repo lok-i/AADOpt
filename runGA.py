@@ -9,9 +9,10 @@ param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
                    'z':{'equal_to':0.},
                    'A':{'greater_than':0.,'lesser_than':5.},
                    'beta':{'equal_to':0.},
-                   'W':{'greater_than':0.0,'lesser_than':10.7e-3},
-                   'L':{'greater_than':0.0,'lesser_than':10.47e-3},
-                   'h':{'greater_than':0.0,'lesser_than':3e-3},}
+                   'W':{'greater_than':1.0e-3,'lesser_than':10.7e-3},
+                   'L':{'greater_than':1.0e-3,'lesser_than':10.47e-3},
+                   'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
+
 
 PatchArray = PatchAntennaArray(n_patches=20,
                                Freq=14e9,
@@ -29,9 +30,8 @@ no_of_generations_done = 0
 def fitness_func(solution, solution_idx):
     global steps_per_gen 
     global no_of_generations_done
-
     steps_per_gen +=1
-    #print(steps_per_gen)
+    # print(steps_per_gen)
     if steps_per_gen%sol_per_pop == 0:
         steps_per_gen = 0
         no_of_generations_done += 1
@@ -51,7 +51,7 @@ num_parents_mating = 10 # Number of solutions to be selected as parents in the m
 # 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
 sol_per_pop = 25 # Number of solutions in the population.
 num_genes = len(PatchArray.params_to_opt_range)
-print(num_genes)
+print("Number of Params to Optimize:",num_genes,'\n')
 gene_ranges = [{'low':p_2_opt_range[0],'high':p_2_opt_range[1]} for p_2_opt_range in PatchArray.params_to_opt_range]
 parent_selection_type = "sss" # Type of parent selection.
 keep_parents = 7 # Number of parents to keep in the next population. -1 means keep all parents and 0 means keep nothing.
@@ -74,10 +74,14 @@ mutation_percent_genes = 10 # Percentage of genes to mutate. This parameter has 
 
 # Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
 
+
+def print_pop(ga_instance,listofallsolutions):
+    print(ga_instance.population)
 if __name__ == "__main__":
     ga_instance = pygad.GA(num_generations=num_generations,
                         num_parents_mating=num_parents_mating, 
                         fitness_func=fitness_function,
+                        on_fitness = print_pop,
                         sol_per_pop=sol_per_pop, 
                         num_genes=num_genes,
                         parent_selection_type=parent_selection_type,
@@ -89,7 +93,7 @@ if __name__ == "__main__":
                         gene_space = gene_ranges,
                         save_best_solutions=True
                         )
-
+    # print(ga_instance.initial_population)
     # Running the GA to optimize the parameters of the function.
     ga_instance.run()
 
