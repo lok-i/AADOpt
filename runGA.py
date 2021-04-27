@@ -14,7 +14,7 @@ param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
                    'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
 
 
-PatchArray = PatchAntennaArray(n_patches=20,
+PatchArray = PatchAntennaArray(n_patches=5,
                                Freq=14e9,
                                Er=2.5,
                                param_range=param_opt_range)
@@ -98,7 +98,7 @@ if __name__ == "__main__":
     ga_instance.run()
 
     # After the generations complete, some plots are showed that summarize the how the outputs/fitenss values evolve over generations.
-    ga_instance.plot_result()
+    #ga_instance.plot_result()
 
 
 
@@ -115,7 +115,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/20PatchWith_WLH' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/5PatchWith_WLH' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.
