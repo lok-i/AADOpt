@@ -4,8 +4,8 @@ from src.AntennaArray import PatchAntennaArray
 import time
 
 delta_angle_for_integration = 2 #keep it 1 for a better surface plot
-param_opt_range = {'x':{'greater_than':-1.,'lesser_than':1.},
-                   'y':{'greater_than':-1.,'lesser_than':1.},
+param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
+                   'y':{'greater_than':-0.25,'lesser_than':0.25},
                    'z':{'equal_to':0.},
                    'A':{'greater_than':0.,'lesser_than':5.},
                    'beta':{'equal_to':0.},
@@ -13,7 +13,7 @@ param_opt_range = {'x':{'greater_than':-1.,'lesser_than':1.},
                    'L':{'equal_to':10.47e-3},
                    'h':{'equal_to':3e-3},}
 
-PatchArray = PatchAntennaArray(n_patches=2,
+PatchArray = PatchAntennaArray(n_patches=10,
                                Freq=14e9,
                                Er=2.5,
                                param_range=param_opt_range)
@@ -31,6 +31,7 @@ def fitness_func(solution, solution_idx):
     global no_of_generations_done
 
     steps_per_gen +=1
+    #print(steps_per_gen)
     if steps_per_gen%sol_per_pop == 0:
         steps_per_gen = 0
         no_of_generations_done += 1
@@ -110,7 +111,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = 'genetic' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/10Patches' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.
