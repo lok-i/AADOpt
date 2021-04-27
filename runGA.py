@@ -4,16 +4,16 @@ from src.AntennaArray import PatchAntennaArray
 import time
 
 delta_angle_for_integration = 2 #keep it 1 for a better surface plot
-param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
-                   'y':{'greater_than':-0.25,'lesser_than':0.25},
+param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
+                   'y':{'greater_than':-0.1,'lesser_than':0.1},
                    'z':{'equal_to':0.},
                    'A':{'greater_than':0.,'lesser_than':5.},
                    'beta':{'equal_to':0.},
-                   'W':{'equal_to':10.7e-3},
-                   'L':{'equal_to':10.47e-3},
-                   'h':{'equal_to':3e-3},}
+                   'W':{'greater_than':0.0,'lesser_than':10.7e-3},
+                   'L':{'greater_than':0.0,'lesser_than':10.47e-3},
+                   'h':{'greater_than':0.0,'lesser_than':3e-3},}
 
-PatchArray = PatchAntennaArray(n_patches=5,
+PatchArray = PatchAntennaArray(n_patches=20,
                                Freq=14e9,
                                Er=2.5,
                                param_range=param_opt_range)
@@ -111,7 +111,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/10Patches' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/20PatchWith_WLH' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.

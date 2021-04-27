@@ -8,9 +8,9 @@ if __name__ == "__main__":
     # W,L,h,Er
     delta_angle_for_integration = 1
 
-    filename = './experiments/5Patches'
+    filename = './experiments/10Patches'
     loaded_ga_instance = pygad.load(filename=filename)
-    loaded_ga_instance.plot_result()
+    # loaded_ga_instance.plot_result()
 
     # print("BEST SOLNS:")
     max_soln = []
@@ -39,3 +39,6 @@ if __name__ == "__main__":
     PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
     print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
     PatchArray.plot_radiation_pattern()
+    PatchArray.display_array()
+
+    

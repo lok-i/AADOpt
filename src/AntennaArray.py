@@ -3,6 +3,7 @@ import math
 import sys
 from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePlot
 from src.directivity import CalcDirectivity
+import src.vis_patch as vis_patch
 import time
 class PatchAntennaArray():
     def __init__(self,n_patches,param_range,Freq=14e9,Er=2.5):
@@ -122,6 +123,9 @@ class PatchAntennaArray():
         else:
             SurfacePlot(Fields=self.c_radiation_pattern)
 
+    def display_array(self):
+        print("*******************GENERATED PATCH ARRAY*******************")
+        vis_patch.make_Patch(self.element_array)
 
 if __name__ == "__main__":
     
