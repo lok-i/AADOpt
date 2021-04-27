@@ -8,9 +8,9 @@ if __name__ == "__main__":
     # W,L,h,Er
     delta_angle_for_integration = 1
 
-    filename = './experiments/10Patches'
+    filename = './experiments/5PatchWith_WLH'
     loaded_ga_instance = pygad.load(filename=filename)
-    # loaded_ga_instance.plot_result()
+    loaded_ga_instance.plot_result()
 
     # print("BEST SOLNS:")
     max_soln = []

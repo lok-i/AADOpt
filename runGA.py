@@ -14,7 +14,7 @@ param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
                    'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
 
 
-PatchArray = PatchAntennaArray(n_patches=20,
+PatchArray = PatchAntennaArray(n_patches=5,
                                Freq=14e9,
                                Er=2.5,
                                param_range=param_opt_range)
