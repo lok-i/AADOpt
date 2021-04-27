@@ -14,7 +14,7 @@ param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
                    'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
 
 
-PatchArray = PatchAntennaArray(n_patches=5,
+PatchArray = PatchAntennaArray(n_patches=20,
                                Freq=14e9,
                                Er=2.5,
                                param_range=param_opt_range)
@@ -75,13 +75,11 @@ mutation_percent_genes = 10 # Percentage of genes to mutate. This parameter has 
 # Creating an instance of the GA class inside the ga module. Some parameters are initialized within the constructor.
 
 
-def print_pop(ga_instance,listofallsolutions):
-    print(ga_instance.population)
+
 if __name__ == "__main__":
     ga_instance = pygad.GA(num_generations=num_generations,
                         num_parents_mating=num_parents_mating, 
                         fitness_func=fitness_function,
-                        on_fitness = print_pop,
                         sol_per_pop=sol_per_pop, 
                         num_genes=num_genes,
                         parent_selection_type=parent_selection_type,
@@ -115,7 +113,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/5PatchWith_WLH' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/20PatchWith_WLH' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.
