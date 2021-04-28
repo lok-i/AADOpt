@@ -16,7 +16,7 @@ if __name__ == "__main__":
                       'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
 
 
-    PatchArray = PatchAntennaArray(n_patches=1,
+    PatchArray = PatchAntennaArray(n_patches=100,
                                   Freq=14e9,
                                   Er=2.5,
                                   param_range=param_opt_range)
@@ -101,7 +101,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/1PatchWith_WLH_20Gen' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/100PatchWith_WLH_20Gen' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.
