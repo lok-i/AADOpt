@@ -14,7 +14,7 @@ param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
                    'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
 
 
-PatchArray = PatchAntennaArray(n_patches=5,
+PatchArray = PatchAntennaArray(n_patches=50,
                                Freq=14e9,
                                Er=2.5,
                                param_range=param_opt_range)
@@ -43,8 +43,8 @@ def fitness_func(solution, solution_idx):
 
 fitness_function = fitness_func
 
-num_generations = 100 # Number of generations.
-num_parents_mating = 10 # Number of solutions to be selected as parents in the mating pool.
+num_generations = 20 # Number of generations.
+num_parents_mating = 15 # Number of solutions to be selected as parents in the mating pool.
 
 # To prepare the initial population, there are 2 ways:
 # 1) Prepare it yourself and pass it to the initial_population parameter. This way is useful when the user wants to start the genetic algorithm with a custom initial population.
@@ -54,7 +54,7 @@ num_genes = len(PatchArray.params_to_opt_range)
 print("Number of Params to Optimize:",num_genes,'\n')
 gene_ranges = [{'low':p_2_opt_range[0],'high':p_2_opt_range[1]} for p_2_opt_range in PatchArray.params_to_opt_range]
 parent_selection_type = "sss" # Type of parent selection.
-keep_parents = 7 # Number of parents to keep in the next population. -1 means keep all parents and 0 means keep nothing.
+keep_parents = 10 # Number of parents to keep in the next population. -1 means keep all parents and 0 means keep nothing.
 crossover_type = "single_point" # Type of the crossover operator.
 # Parameters of the mutation operation.
 mutation_type = "random" # Type of the mutation operator.
@@ -113,7 +113,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/20PatchWith_WLH' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/50PatchWith_WLH_20Gen' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.
