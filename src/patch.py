@@ -4,7 +4,9 @@ import matplotlib.pyplot as plt
 import numpy as np
 from math import cos, sin, sqrt,acos,atan2
 from mpl_toolkits.mplot3d import Axes3D
-  
+from matplotlib import pyplot as plt
+from matplotlib import animation
+
 def sph2cart1(r, th, phi):
   x = r * cos(phi) * sin(th)
   y = r * sin(phi) * sin(th)
@@ -149,14 +151,14 @@ def PatchEHPlanePlot(Freq, W, L, h, Er, isLog=True):
 
     return fields                                                                                               # Return the calculated fields
 
-def SurfacePlot(Fields, Freq=None, W=None, L=None, h=None, Er=None):
+def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
     """Plots 3D surface plot over given theta/phi range in Fields by calculating cartesian coordinate equivalent of spherical form."""
 
     print("Processing SurfacePlot...")
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
+    # ax = Axes3D(fig)
     phiSize = Fields.shape[0]                                                                                   # Finds the phi & theta range
     thetaSize = Fields.shape[1]
 
@@ -174,12 +176,32 @@ def SurfacePlot(Fields, Freq=None, W=None, L=None, h=None, Er=None):
             Y[phi, theta] = ye
             Z[phi, theta] = ze
 
-    ax.plot_surface(X, Y, Z, color='b')                                                                         # Plot surface
-    plt.ylabel('Y')
-    plt.xlabel('X')                                                                                             # Plot formatting
-    if W!=None:
-        plt.title("Patch: \nW=" + str(W) + " \nL=" + str(L) +  "\nEr=" + str(Er) + " h=" + str(h) + " \n@" + str(Freq) + "Hz")
-    plt.show()
+    def init():
+        ax.plot_surface(X, Y, Z, color='b')                                                                         # Plot surface
+        plt.ylabel('Y')
+        plt.xlabel('X')                                                                                             # Plot formatting
+        if W!=None:
+            plt.title("Patch: \nW=" + str(W) + " \nL=" + str(L) +  "\nEr=" + str(Er) + " h=" + str(h) + " \n@" + str(Freq) + "Hz")
+        return fig,
+    
+    def animate(i):
+        print("Frame:",i)
+        ax.view_init(elev=10., azim=i)
+        return fig,
+
+    if save_plot!= None:
+        # Animate
+        plt.show()
+        print("Recording Radiation Video ...")
+        anim = animation.FuncAnimation(fig, animate, init_func=init,
+                                       frames=360, interval=20, blit=True)
+        # Save
+        anim.save(save_plot, fps=30, extra_args=['-vcodec', 'libx264'])
+    else:
+        init()
+        plt.show()
+
+    
 
 def DesignPatch(Er, h, Freq):
     """

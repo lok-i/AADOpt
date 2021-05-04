@@ -8,7 +8,10 @@ if __name__ == "__main__":
     # W,L,h,Er
     delta_angle_for_integration = 1
 
-    filename = './experiments/5PatchWith_WLH'
+    # filename = './experiments/10Patches'
+    # filename = './experiments/20PatchWith_WLH'
+
+    filename = './experiments/100PatchWith_WLH_20Gen'
     loaded_ga_instance = pygad.load(filename=filename)
     loaded_ga_instance.plot_result()
 
@@ -36,9 +39,16 @@ if __name__ == "__main__":
     PatchArray.update_array_params(max_soln)
     print("Best Gain:",max_fitness)
     print("Best Params:\n",PatchArray.element_array)
-    PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
-    print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
-    PatchArray.plot_radiation_pattern()
+    
+    # print("Calculating Fields...")
+    # PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
+    # print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
+    # print("Generating Radiation Plot...")
+    # # PatchArray.plot_radiation_pattern(save_plot_at="./plots_figs/"+filename.replace("./experiments","")+".mp4")
+    # # print("Rendering Antenna...")
+    # PatchArray.plot_radiation_pattern()
+
+    
     PatchArray.display_array()
 
     

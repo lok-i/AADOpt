@@ -3,10 +3,16 @@ import math
 import sys
 from src.patch import cart2sph1,sph2cart1,PatchFunction,GetPatchFields,SurfacePlot
 from src.directivity import CalcDirectivity
-#import src.vis_patch as vis_patch
+import src.vis_patch as vis_patch
 import time
+from matplotlib import pyplot as plt
+from matplotlib import animation
+from mpl_toolkits.mplot3d import Axes3D
+# from PatchTopology import Grid,Spiral
 class PatchAntennaArray():
     def __init__(self,n_patches,param_range,Freq=14e9,Er=2.5):
+        # X is along width
+        # Y is along length
 
         if n_patches <= 0:
             raise Exception("n_patches cannot be <=0")
@@ -27,7 +33,12 @@ class PatchAntennaArray():
         print('Params being optimized:')
         for key in param_range.keys():
             if 'equal_to' in param_range[key].keys():
-                self.element_array[:,param_to_array_index[key]] = param_range[key]['equal_to']
+                if type(param_range[key]['equal_to']) is list :
+                    for k in range(self._n_patches):
+                        self.element_array[k,param_to_array_index[key]] = param_range[key]['equal_to'][k]
+
+                else:
+                    self.element_array[:,param_to_array_index[key]] = param_range[key]['equal_to']
             else:
                 params_to_opt_min.append(param_range[key]['greater_than'])
                 params_to_opt_max.append(param_range[key]['lesser_than'])
@@ -118,12 +129,12 @@ class PatchAntennaArray():
                     )
         return Gain
 
-    def plot_radiation_pattern(self):
-
+    def plot_radiation_pattern(self,save_plot_at=None):
+        fig = None
         if len(self.c_radiation_pattern) == 0:
             raise Exception("Radiation Pattern hasn't been calculated. call CalculateFieldSumPatch() ")
         else:
-            SurfacePlot(Fields=self.c_radiation_pattern)
+            SurfacePlot(Fields=self.c_radiation_pattern,save_plot=save_plot_at)
 
     def display_array(self):
         print("*******************GENERATED PATCH ARRAY*******************")
@@ -133,16 +144,78 @@ if __name__ == "__main__":
     
     # W,L,h,Er
     delta_angle_for_integration = 1
+
+
+    PatchDist = Grid(
+                    n_patches=16,
+                    Wmax=10.47e-3,
+                    Lmax=10.47e-3,
+                    clearence= 10.47e-3
+                    )
+
+    PatchDist = Spiral(
+                        n_patches=50,
+                        Wmax=10.47e-3,
+                        Lmax=10.47e-3,
+                        clearence= 10.47e-3
+                      )
+
+    x_pos,y_pos = PatchDist.get_path_pos()
+
+    param_opt_range = {'x':{'equal_to':x_pos},
+                       'y':{'equal_to':y_pos},
+                       'z':{'equal_to':0},
+                       'A':{'greater_than':0.,'lesser_than':5.},
+                       'beta':{'equal_to':0.},
+                       'W':{'greater_than':1.0e-3,'lesser_than':PatchDist.Wmax},
+                       'L':{'greater_than':1.0e-3,'lesser_than':PatchDist.Lmax},
+                       'h':{'greater_than':1.0e-3,'lesser_than':3e-3}}
+
+    PatchArray = PatchAntennaArray(
+                                   n_patches=PatchDist.n_patches,
+                                   Freq=14e9,
+                                   Er=2.5,
+                                   param_range=param_opt_range
+                                  )
+
+    print('Opt_values_range:\n',len(PatchArray.params_to_opt_range))
+    
+    # print('Max_opt_values:',PatchArray.params_to_opt_range[:][1])
+    # print('initial_elements:\n',PatchArray.element_array)
+
+    update_to = [1.,PatchDist.Wmax,PatchDist.Lmax,3e-3]*PatchArray._n_patches
+    PatchArray.update_array_params(update_to)
+    # print('updates_elements:\n',PatchArray.element_array)
+
+    
+    start = time.time()
+    PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
+    print(PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
+    end = time.time()
+
+    print(
+          "TimeTaken:",
+          (end-start),
+          's',
+         )
+
+    PatchArray.plot_radiation_pattern()
+
+    PatchArray.display_array()
+
+
+    '''
+    #### for no topology constraints
     param_opt_range = {'x':{'greater_than':0,'lesser_than':10},
                        'y':{'greater_than':-5,'lesser_than':0},
                        'z':{'equal_to':0},
                        'A':{'greater_than':0.,'lesser_than':5.},
                        'beta':{'equal_to':0.},
-                       'W':{'equal_to':10.7e-3},
+                       'W':{'equal_to':20.7e-3},
                        'L':{'equal_to':10.47e-3},
                        'h':{'equal_to':3e-3},}
 
-    PatchArray = PatchAntennaArray(n_patches=2,
+    PatchArray = PatchAntennaArray(n_patches=9,
                                   Freq=14e9,
                                   Er=2.5,
                                   param_range=param_opt_range)
@@ -150,7 +223,8 @@ if __name__ == "__main__":
     # print('Max_opt_values:',PatchArray.params_to_opt_range[:][1])
 
     print('initial_elements:\n',PatchArray.element_array)
-    update_to = [0.005,0.,1.,0.,0.,1.]
+    update_to = [10.e-3+41.4e-3,0.,1.,
+                 0.,0.,1.]
     PatchArray.update_array_params(update_to)
     print('updates_elements:\n',PatchArray.element_array)
 
@@ -165,6 +239,8 @@ if __name__ == "__main__":
     print("TimeTaken:",(end-start),'s')
 
     PatchArray.plot_radiation_pattern()
+    PatchArray.display_array()
+    '''
 
 
 

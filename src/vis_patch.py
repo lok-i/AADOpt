@@ -39,6 +39,15 @@ def substrate(x,y,z,r,g,b):
             glVertex3fv(vertices[vertex])
     glEnd()
 
+def traj_path(x1,y1,x2,y2):
+    vertices = (( x1, y1, 0.), (x2, y2, 0.))
+    
+    glBegin(GL_LINES)
+    glColor3fv((0, 0, 0))
+    glVertex3fv(vertices[0])
+    glVertex3fv(vertices[1])
+    glEnd()
+
 def patch(x,y,z,r,g,bl,a,b):
 
     vertices = ((-x+a, -y+b, -z), (-x+a, y+b, -z), (-x+a, y+b, z), (-x+a, -y+b, z), (x+a, -y+b, -z), (x+a, y+b, -z), (x+a, y+b, z), (x+a, -y+b, z))
@@ -119,7 +128,19 @@ def make_Patch(element_array):
         substrate(S_L + S_c, S_B + S_c, S_H, 255, 215, 0)   #(l,b,h,r,g,b)
 
         for element in element_array:
-            patch(element[5], element[6], element[7], 105, 105, 105, element[0], element[1])    
+            # w/2, l/2, h, r,g,bl, x,y
+            patch(0.5*element[5], 0.5*element[6], element[7], 105, 105, 105, element[0], element[1]) 
+        
+        for element_id in range(element_array.shape[0]-1):
+            # if element_id != element_array.shape[0]:
+            traj_path(
+                element_array[element_id][0],
+                element_array[element_id][1],
+                element_array[element_id+1][0],
+                element_array[element_id+1][1],               
+                        )
+            
+
         
         pygame.display.set_caption('Patch Design')
         pygame.display.flip()
