@@ -26,9 +26,9 @@ delta_angle_for_integration = 2 #keep it 1 for a better surface plot
 #                   'L':{'greater_than':1.0e-3,'lesser_than':10.47e-3},
 #                   'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
 
-PatchDist = Spiral(
-                    n_patches=50,
-                    Wmax=10.47e-3,
+PatchDist = Grid(
+                    n_patches=49,
+                    Wmax=20.47e-3,
                     Lmax=10.47e-3,
                     clearence= 10.47e-3
                     )
@@ -133,7 +133,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/100PatchWith_WLH_20Gen' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/50Patch_20Gen_Grid' # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.

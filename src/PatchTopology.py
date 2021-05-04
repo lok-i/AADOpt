@@ -8,10 +8,12 @@ class Grid():
 
         # uniformly distribute a perfect square at the centre, for symmetricity
         self.n_patches = n_patches
-        if  math.isqrt(n_patches) ** 2 != n_patches :
+        if  int(math.sqrt(n_patches)) ** 2 != n_patches :
             print("Warning: Patches are lost as no. of patches is not a perfect square")
         
         self.max_possible_square = int(math.sqrt(self.n_patches))
+        self.n_patches = self.max_possible_square**2
+        
         print(self.max_possible_square)
         self.Wmax = Wmax
         self.Lmax = Lmax
@@ -30,7 +32,6 @@ class Grid():
         y = [0]*self.max_possible_square*self.max_possible_square
         for i in range(self.max_possible_square):
             for j in range(self.max_possible_square):
-                print(k)
                 x[k] = -half_width + i*(self.Wmax+self.clearence)
                 y[k] = -half_length + j*(self.Wmax+self.clearence)
                 k+=1
