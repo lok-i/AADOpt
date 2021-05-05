@@ -154,7 +154,7 @@ if __name__ == "__main__":
     #                 )
 
     PatchDist = Spiral2(
-                        n_patches=50,
+                        n_patches=500,
                         Wmax=10.47e-3,
                         Lmax=10.47e-3,
                         clearence= 10.47e-3
@@ -188,18 +188,18 @@ if __name__ == "__main__":
     # print('updates_elements:\n',PatchArray.element_array)
 
     
-    start = time.time()
-    PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
-    print(PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
-    end = time.time()
+    # start = time.time()
+    # PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
+    # print(PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
+    # end = time.time()
 
-    print(
-          "TimeTaken:",
-          (end-start),
-          's',
-         )
+    # print(
+    #       "TimeTaken:",
+    #       (end-start),
+    #       's',
+    #      )
 
-    PatchArray.plot_radiation_pattern()
+    # PatchArray.plot_radiation_pattern()
 
     PatchArray.display_array()
 
