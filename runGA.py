@@ -4,48 +4,68 @@ from src.AntennaArray import PatchAntennaArray
 from src.PatchTopology import Grid,Spiral
 import time
 
+# EXPERIMENTE PARAMETERS
+
+PATCH_TOPOLOGY =  'Grid'# None
+NO_OF_GENERATIONS = 1
+NO_OF_PATCHES = 4 # give a perfect square for grid
+
+
+# -----------------------------------------------------------------
+
 delta_angle_for_integration = 2 #keep it 1 for a better surface plot
 
-# param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
-#                    'y':{'greater_than':-0.25,'lesser_than':0.25},
-#                    'z':{'equal_to':0.},
-#                    'A':{'greater_than':0.,'lesser_than':5.},
-#                    'beta':{'equal_to':0.},
-#                    'W':{'equal_to':10.7e-3},
-#                    'L':{'equal_to':10.47e-3},
-#                    'h':{'equal_to':3e-3},
-#                     }
+if PATCH_TOPOLOGY == None:
+    # only XYZ
+    param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
+                       'y':{'greater_than':-0.25,'lesser_than':0.25},
+                       'z':{'equal_to':0.},
+                       'A':{'greater_than':0.,'lesser_than':5.},
+                       'beta':{'equal_to':0.},
+                       'W':{'equal_to':10.7e-3},
+                       'L':{'equal_to':10.47e-3},
+                       'h':{'equal_to':3e-3},
+                        }
 
-
-# param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
-#                   'y':{'greater_than':-0.1,'lesser_than':0.1},
-#                   'z':{'equal_to':0.},
-#                   'A':{'greater_than':0.,'lesser_than':5.},
-#                   'beta':{'equal_to':0.},
-#                   'W':{'greater_than':1.0e-3,'lesser_than':10.7e-3},
-#                   'L':{'greater_than':1.0e-3,'lesser_than':10.47e-3},
-#                   'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
-
-PatchDist = Grid(
-                    n_patches=49,
+    # XYZ + WLH
+    param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
+                      'y':{'greater_than':-0.1,'lesser_than':0.1},
+                      'z':{'equal_to':0.},
+                      'A':{'greater_than':0.,'lesser_than':5.},
+                      'beta':{'equal_to':0.},
+                      'W':{'greater_than':1.0e-3,'lesser_than':10.7e-3},
+                      'L':{'greater_than':1.0e-3,'lesser_than':10.47e-3},
+                      'h':{'greater_than':1.0e-3,'lesser_than':3e-3},}
+else:
+    if PATCH_TOPOLOGY == 'Grid':
+        PatchDist = Grid(
+                    n_patches=NO_OF_PATCHES,
                     Wmax=20.47e-3,
                     Lmax=10.47e-3,
                     clearence= 10.47e-3
                     )
 
-x_pos,y_pos = PatchDist.get_path_pos()
+    elif PATCH_TOPOLOGY == 'Spiral':
+        PatchDist = Spiral(
+                    n_patches=NO_OF_PATCHES,
+                    Wmax=20.47e-3,
+                    Lmax=10.47e-3,
+                    clearence= 10.47e-3
+                    )
 
-param_opt_range = { 'x':{'equal_to':x_pos},
-                    'y':{'equal_to':y_pos},
-                    'z':{'equal_to':0},
-                    'A':{'greater_than':0.,'lesser_than':5.},
-                    'beta':{'equal_to':0.},
-                    'W':{'greater_than':1.0e-3,'lesser_than':PatchDist.Wmax},
-                    'L':{'greater_than':1.0e-3,'lesser_than':PatchDist.Lmax},
-                    'h':{'greater_than':1.0e-3,'lesser_than':3e-3}}
+    x_pos,y_pos = PatchDist.get_path_pos()
+
+    param_opt_range = { 'x':{'equal_to':x_pos},
+                        'y':{'equal_to':y_pos},
+                        'z':{'equal_to':0},
+                        'A':{'greater_than':0.,'lesser_than':5.},
+                        'beta':{'equal_to':0.},
+                        'W':{'greater_than':1.0e-3,'lesser_than':PatchDist.Wmax},
+                        'L':{'greater_than':1.0e-3,'lesser_than':PatchDist.Lmax},
+                        'h':{'greater_than':1.0e-3,'lesser_than':3e-3}}
 
 PatchArray = PatchAntennaArray(
-                                n_patches=PatchDist.n_patches,
+                                n_patches=NO_OF_PATCHES,
                                 Freq=14e9,
                                 Er=2.5,
                                 param_range=param_opt_range
@@ -74,7 +94,7 @@ def fitness_func(solution, solution_idx):
 
 fitness_function = fitness_func
 
-num_generations = 20 # Number of generations.
+num_generations = NO_OF_GENERATIONS # Number of generations.
 num_parents_mating = 15 # Number of solutions to be selected as parents in the mating pool.
 
 # To prepare the initial population, there are 2 ways:
@@ -82,7 +102,7 @@ num_parents_mating = 15 # Number of solutions to be selected as parents in the m
 # 2) Assign valid integer values to the sol_per_pop and num_genes parameters. If the initial_population parameter exists, then the sol_per_pop and num_genes parameters are useless.
 sol_per_pop = 25 # Number of solutions in the population.
 num_genes = len(PatchArray.params_to_opt_range)
-print("Number of Params to Optimize:",num_genes,'\n')
+
 gene_ranges = [{'low':p_2_opt_range[0],'high':p_2_opt_range[1]} for p_2_opt_range in PatchArray.params_to_opt_range]
 parent_selection_type = "sss" # Type of parent selection.
 keep_parents = 10 # Number of parents to keep in the next population. -1 means keep all parents and 0 means keep nothing.
@@ -91,11 +111,17 @@ crossover_type = "single_point" # Type of the crossover operator.
 mutation_type = "random" # Type of the mutation operator.
 mutation_percent_genes = 10 # Percentage of genes to mutate. This parameter has no action if the parameter mutation_num_genes exists or when mutation_type is None.
 
+print("Number of Params to Optimize:",num_genes)
+print("Number of Patches to Optimize:",NO_OF_PATCHES)
+print("TOPOLOGY:",PATCH_TOPOLOGY,'\n')
 
 
 
 
 if __name__ == "__main__":
+
+
+
 
     ga_instance = pygad.GA(num_generations=num_generations,
                         num_parents_mating=num_parents_mating, 
@@ -133,7 +159,7 @@ if __name__ == "__main__":
         print("Best fitness value reached after {best_solution_generation} generations.".format(best_solution_generation=ga_instance.best_solution_generation))
 
     # Saving the GA instance.
-    filename = './experiments/50Patch_20Gen_Grid' # The filename to which the instance is saved. The name is without extension.
+    filename = './experiments/'+str(NO_OF_PATCHES)+'Patch_'+str(NO_OF_GENERATIONS)+'Gen_'+str(PATCH_TOPOLOGY) # The filename to which the instance is saved. The name is without extension.
     ga_instance.save(filename=filename)
 
     # Loading the saved GA instance.

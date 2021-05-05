@@ -1,7 +1,7 @@
 import pygad
 import numpy
 from src.AntennaArray import PatchAntennaArray
-from runGA import fitness_func,PatchArray
+from runGA import *
 
 if __name__ == "__main__":
     
@@ -11,7 +11,7 @@ if __name__ == "__main__":
     # filename = './experiments/10Patches'
     # filename = './experiments/20PatchWith_WLH'
 
-    filename = './experiments/100PatchWith_WLH_20Gen'
+    filename = filename = './experiments/'+str(NO_OF_PATCHES)+'Patch_'+str(NO_OF_GENERATIONS)+'Gen_'+str(PATCH_TOPOLOGY)
     loaded_ga_instance = pygad.load(filename=filename)
     loaded_ga_instance.plot_result()
 

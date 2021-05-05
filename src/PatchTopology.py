@@ -57,7 +57,6 @@ class Spiral():
         
         y = r cos(theta)
         '''
-
         # first patch is in origin
         theta = 0.
         r = 0.
@@ -87,6 +86,33 @@ class Spiral():
                 x[k+1] = x[k]
                 y[k+1] = y[k]
 
+        return x,y
+
+class Spiral2():
+    def __init__(self,n_patches,Wmax,Lmax,clearence):
+
+        # uniformly distribute a perfect square at the centre, for symmetricity
+        self.n_patches = n_patches
+        self.Wmax = Wmax
+        self.Lmax = Lmax
+        self.inter_rect_clearence = 0.5#clearence*math.sqrt(2.0)
+
+    def get_path_pos(self):
+        
+        '''
+        x^2 + y^2 = r^2
+
+        x = r cos(theta)
+        
+        y = r cos(theta)
+        '''
+
+        # first patch is in origin
+        theta = 0.
+        r = 1.0e-3
+        x = [0]*self.n_patches
+        y = [0]*self.n_patches
+
         '''
         Variant 2 (yset to solve)
         
@@ -101,51 +127,69 @@ class Spiral():
         dtheta = variable
         '''
 
-        # for k in range(1,self.n_patches):
-        #     '''
-        #     solve:
+        for k in range(1,self.n_patches):
+            '''
+            solve:
 
-        #     mod{ ( cos(theta) -r sin(theta) ) (dr)         } = Wmax + c/2 
-        #        { ( sin(theta) +r cos(theta) ) (dtheta)     }   lmax + c/2
+            mod{ ( cos(theta) -r sin(theta) ) (dr)         } = Wmax + c/2 
+               { ( sin(theta) +r cos(theta) ) (dtheta)     }   lmax + c/2
 
-        #     =>            A        *        x          = +b   , solve for x
-        #                   A        *        x          = -b   , solve for x
+            =>            A        *        x          = +b   , solve for x
+                          A        *        x          = -b   , solve for x
 
-        #     '''
-        #     A = np.array([
-        #                 [math.cos(theta), -r*math.sin(theta)],
-        #                 [math.sin(theta), +r*math.cos(theta)],
-        #                 ])
-        #     b_plus = np.array([ self.Wmax + 0.5*self.inter_rect_clearence, 
-        #                         self.Lmax + 0.5*self.inter_rect_clearence
-        #                       ])
+            '''
+            A = np.array([
+                        [math.cos(theta), -r*math.sin(theta)],
+                        [math.sin(theta), +r*math.cos(theta)],
+                        ])
+            bs = [
+                    [self.Wmax + 0.5*self.inter_rect_clearence, 
+                     self.Lmax + 0.5*self.inter_rect_clearence],
+
+                    # [  self.Wmax + 0.5*self.inter_rect_clearence, 
+                    #  -(self.Lmax + 0.5*self.inter_rect_clearence)],
+
+                    # [-(self.Wmax + 0.5*self.inter_rect_clearence), 
+                    #  self.Lmax + 0.5*self.inter_rect_clearence],
+
+                    # [-(self.Wmax + 0.5*self.inter_rect_clearence), 
+                    #  -(self.Lmax + 0.5*self.inter_rect_clearence)],                 
             
-        #     b_minus = np.array([ 
-        #                        -(self.Wmax + 0.5*self.inter_rect_clearence), 
-        #                        -(self.Lmax + 0.5*self.inter_rect_clearence)
-        #                        ])
-        #     deltas_pos = np.linalg.solve(A, b_plus)
-        #     deltas_neg = np.linalg.solve(A, b_minus)
+                 ]
 
-        #     print('plus gradients',deltas_pos )
-        #     print('minus gradients',deltas_neg )
+            min_dis = np.inf
+            nearest_pt = None
+            min_delta = None
+                         
+            for b in bs:
+                delta = np.linalg.solve(A, np.array(b))
+                c_r = r + delta[0]
+                c_theta = theta + delta[1]
 
-        #     # r += deltas_pos[0]
-        #     theta += deltas_pos[1]
+                new_pt = np.array([c_r*math.cos(c_theta),
+                                   c_r*math.sin(c_theta)])
 
-        #     r += deltas_neg[0]
-        #     # theta += deltas_neg[1]
+                dis_from_origin = np.linalg.norm(new_pt)
+                # print('new_pt',new_pt,'mag',dis_from_origin)
+                if min_dis > dis_from_origin:
+                    min_dis = dis_from_origin
+                    nearest_pt = new_pt
+                    min_delta = delta
 
-        #     x[k] = r*math.cos(theta)
-        #     y[k] = r*math.sin(theta)
+            # update parameters of the curve
+            r += min_delta[0]
+            theta += min_delta[1]
+            # update the point
+            print("Nearest Point",nearest_pt)
+            x[k] = nearest_pt[0]
+            y[k] = nearest_pt[1]
             
-        #     if k != self.n_patches -1:
-        #         x[k+1] = x[k]
-        #         y[k+1] = y[k]
+            if k != self.n_patches -1:
+                x[k+1] = x[k]
+                y[k+1] = y[k]
 
 
         return x,y
-
 
 
 if __name__ == "__main__":
