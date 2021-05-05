@@ -8,7 +8,7 @@ import time
 from matplotlib import pyplot as plt
 from matplotlib import animation
 from mpl_toolkits.mplot3d import Axes3D
-from src.PatchTopology import Grid,Spiral,Spiral2
+from src.PatchTopology import *
 class PatchAntennaArray():
     def __init__(self,n_patches,param_range,Freq=14e9,Er=2.5):
         # X is along width
@@ -153,8 +153,8 @@ if __name__ == "__main__":
     #                 clearence= 10.47e-3
     #                 )
 
-    PatchDist = Spiral(
-                        n_patches=250,
+    PatchDist = Spiral2(
+                        n_patches=50,
                         Wmax=10.47e-3,
                         Lmax=10.47e-3,
                         clearence= 10.47e-3
@@ -199,7 +199,7 @@ if __name__ == "__main__":
           's',
          )
 
-    # PatchArray.plot_radiation_pattern()
+    PatchArray.plot_radiation_pattern()
 
     PatchArray.display_array()
 
