@@ -1,7 +1,7 @@
 import pygad
 import numpy
 from src.AntennaArray import PatchAntennaArray
-from src.PatchTopology import Grid,Spiral
+from src.PatchTopology import *
 import time
 
 # EXPERIMENTE PARAMETERS
@@ -52,6 +52,15 @@ else:
                     Lmax=10.47e-3,
                     clearence= 10.47e-3
                     )
+    elif PATCH_TOPOLOGY == 'Spiral2':
+        PatchDist = Spiral2(
+                    n_patches=NO_OF_PATCHES,
+                    Wmax=20.47e-3,
+                    Lmax=10.47e-3,
+                    clearence= 10.47e-3
+                    )
+
+
 
     x_pos,y_pos = PatchDist.get_path_pos()
 
