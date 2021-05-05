@@ -6,9 +6,9 @@ import time
 
 # EXPERIMENTE PARAMETERS
 
-PATCH_TOPOLOGY =  'Spiral'# None
+PATCH_TOPOLOGY =  'Spiral2'# None
 NO_OF_GENERATIONS = 25
-NO_OF_PATCHES = 100# give a perfect square for grid
+NO_OF_PATCHES = 50 # give a perfect square for grid
 
 
 # -----------------------------------------------------------------
