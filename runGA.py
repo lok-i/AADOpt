@@ -6,29 +6,32 @@ import time
 
 # EXPERIMENTE PARAMETERS
 
-PATCH_TOPOLOGY =  'Spiral2'# None
+PATCH_TOPOLOGY =  'Grid'# None
 NO_OF_GENERATIONS = 25
-NO_OF_PATCHES = 50 # give a perfect square for grid
+NO_OF_PATCHES = 64 # give a perfect square for grid
 
 
 # -----------------------------------------------------------------
 
 delta_angle_for_integration = 2 #keep it 1 for a better surface plot
 
-if PATCH_TOPOLOGY == None:
+if 'None' in str(PATCH_TOPOLOGY):
+
     # only XYZ
-    param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
-                       'y':{'greater_than':-0.25,'lesser_than':0.25},
-                       'z':{'equal_to':0.},
-                       'A':{'greater_than':0.,'lesser_than':5.},
-                       'beta':{'equal_to':0.},
-                       'W':{'equal_to':10.7e-3},
-                       'L':{'equal_to':10.47e-3},
-                       'h':{'equal_to':3e-3},
-                        }
+    if 'XYZ' in str(PATCH_TOPOLOGY):
+        param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
+                        'y':{'greater_than':-0.25,'lesser_than':0.25},
+                        'z':{'equal_to':0.},
+                        'A':{'greater_than':0.,'lesser_than':5.},
+                        'beta':{'equal_to':0.},
+                        'W':{'equal_to':10.7e-3},
+                        'L':{'equal_to':10.47e-3},
+                        'h':{'equal_to':3e-3},
+                            }
 
     # XYZ + WLH
-    param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
+    else:
+        param_opt_range = {'x':{'greater_than':-0.1,'lesser_than':0.1},
                       'y':{'greater_than':-0.1,'lesser_than':0.1},
                       'z':{'equal_to':0.},
                       'A':{'greater_than':0.,'lesser_than':5.},

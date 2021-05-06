@@ -40,11 +40,11 @@ if __name__ == "__main__":
     print("Best Gain:",max_fitness)
     print("Best Params:\n",PatchArray.element_array)
     
-    print("Calculating Fields...")
-    PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
-    print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
-    print("Generating Radiation Plot...")
-    PatchArray.plot_radiation_pattern(save_plot_at="./plots_figs/"+filename.replace("./experiments","")+".mp4")
+    # print("Calculating Fields...")
+    # PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
+    # print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
+    # print("Generating Radiation Plot...")
+    # PatchArray.plot_radiation_pattern(save_plot_at="./plots_figs/"+filename.replace("./experiments","")+".mp4")
     print("Rendering Antenna...")
     # PatchArray.plot_radiation_pattern()
 

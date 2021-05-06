@@ -191,6 +191,7 @@ def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
 
     if save_plot!= None:
         # Animate
+        init()
         plt.show()
         print("Recording Radiation Video ...")
         anim = animation.FuncAnimation(fig, animate, init_func=init,
