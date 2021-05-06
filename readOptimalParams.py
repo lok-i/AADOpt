@@ -45,7 +45,7 @@ if __name__ == "__main__":
     print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
     print("Generating Radiation Plot...")
     PatchArray.plot_radiation_pattern(save_plot_at="./plots_figs/"+filename.replace("./experiments","")+".mp4")
-    print("Rendering Antenna...")    
+    print("Rendering Antenna Patch...")    
     PatchArray.display_array()
 
     
