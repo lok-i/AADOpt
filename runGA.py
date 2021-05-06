@@ -6,7 +6,7 @@ import time
 
 # EXPERIMENTE PARAMETERS
 
-PATCH_TOPOLOGY =  'None'# None
+PATCH_TOPOLOGY =  'NoneXYZ'# None
 NO_OF_GENERATIONS = 100
 NO_OF_PATCHES = 5 # give a perfect square for grid
 
