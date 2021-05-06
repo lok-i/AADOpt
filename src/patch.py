@@ -6,6 +6,9 @@ from math import cos, sin, sqrt,acos,atan2
 from mpl_toolkits.mplot3d import Axes3D
 from matplotlib import pyplot as plt
 from matplotlib import animation
+from tqdm import tqdm
+
+
 
 def sph2cart1(r, th, phi):
   x = r * cos(phi) * sin(th)
@@ -165,7 +168,6 @@ def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
     X = np.ones((phiSize, thetaSize))                                                                           # Prepare arrays to hold the cartesian coordinate data.
     Y = np.ones((phiSize, thetaSize))
     Z = np.ones((phiSize, thetaSize))
-
     for phi in range(phiSize):                                                                                  # Iterate over all phi/theta range
         for theta in range(thetaSize):
             e = Fields[phi][theta]
@@ -185,7 +187,7 @@ def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
         return fig,
     
     def animate(i):
-        print("Frame:",i)
+
         ax.view_init(elev=10., azim=i)
         return fig,
 
@@ -194,8 +196,9 @@ def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
         init()
         plt.show()
         print("Recording Radiation Video ...")
+
         anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                       frames=360, interval=20, blit=True)
+                                       frames= tqdm(range(360)), interval=20, blit=True)
         # Save
         anim.save(save_plot, fps=30, extra_args=['-vcodec', 'libx264'])
     else:
