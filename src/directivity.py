@@ -5,8 +5,8 @@ Also includes some examples that are used to check result.
 """
 from math import sin, sqrt, pi, log10, radians
 import numpy as np
-from src.patch import *
-# import patch
+# from src.patch import *
+import src.patch as patch
 
 
 def SqrtSinPattern(Theta, Phi, *args):
@@ -42,71 +42,7 @@ def xfrange(start, stop, step):
         yield start + i * step
         i += 1
 
-
-
-
-def CalcDirectivityAt(Efficiency, RadPatternFunction,g_theta=0.0,g_phi=0.0, *args):
-    """
-    Integration is of the form :
-    %
-    %       360   180
-    %     Int{  Int{  (E(theta,phi)*conj(E(theta,phi))*sin(theta) d(theta) d(phi)
-    %        0     0
-    %
-    %         z
-    %         |-theta   (theta 0-180 measured from z-axis)
-    %         |/
-    %         |_____ y
-    %        /\
-    %       /-phi       (phi 0-360 measured from x-axis)
-    %      x
-    %
-    """
-    print("Calculating Directivity for " + RadPatternFunction.__name__)
-
-    deltheta = 2                                                                # Step value of theta (Deg)
-    delphi = 2                                                                  # Step value for phi (Deg)
-
-    dth = radians(deltheta)
-    dph = radians(delphi)
-
-    Psum = 0
-
-    for phi in xfrange(0, 360, delphi):                                                                     # Phi Integration Loop 0-360 degrees
-        for theta in xfrange(0, 180, deltheta):                                                             # Theta Integration Loop 0-180 degrees
-            eField = RadPatternFunction(theta, phi, *args)                                       # Total E-field at point
-            Pthph = eField * np.conjugate(eField)                                                                             # Convert to power
-
-            Psum = Psum + Pthph * sin(radians(theta)) * dth * dph                                           # Summation
-
-    eField = RadPatternFunction(g_theta, g_phi, *args)                                       # Total E-field at point
-    P_at = eField * np.conjugate(eField)                                                                             # Convert to power
-    
-    P_at = P_at * (Efficiency / 100)                                                                        # Apply antenna efficiency
-
-    directivity_lin = P_at / (Psum / (4 * pi))
-    directivity_dBi = 10 * log10(directivity_lin)                                                           # Directivity (dB wrt isotropic)
-
-    if Efficiency < 100:                                                                                    # Gain case
-        dBdiff = 10 * log10(abs(100 / Efficiency))
-        '''                                                          # Difference between gain and directivity
-        print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
-        print("Efficiency = " + str(Efficiency) + "%")
-        print("Gain = " + str(directivity_dBi) + "dB")
-        '''
-        Gain = directivity_dBi
-        Directivity = directivity_dBi + dBdiff
-
-    else:                                                                                                   # Directivity case
-        # print("Directivity = " + str(directivity_dBi) + "dBi")
-        Gain, Directivity = directivity_dBi,directivity_dBi
-
-    return Directivity,Gain
-
-
-
-
-def CalcDirectivity(Efficiency, RadPatternFunction, *args):
+def CalcDirectivity(Efficiency, RadPatternFunction, *args,theta_range=[0,180],phi_range=[0,360],to_print=False,dAngleInDeg=2):
     """
     Based on calc_directivity.m from ArrayCalc.
     Calculates peak directivity in dBi value using numerical integration.
@@ -132,10 +68,10 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     %      x
     %
     """
-    # print("Calculating Directivity for " + RadPatternFunction.__name__)
+    
 
-    deltheta = 2                                                                # Step value of theta (Deg)
-    delphi = 2                                                                  # Step value for phi (Deg)
+    deltheta = dAngleInDeg                                                              # Step value of theta (Deg)
+    delphi = dAngleInDeg                                                              # Step value for phi (Deg)
 
     dth = radians(deltheta)
     dph = radians(delphi)
@@ -145,8 +81,8 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     Thmax = 0
     Phmax = 0
 
-    for phi in xfrange(0, 360, delphi):                                                                     # Phi Integration Loop 0-360 degrees
-        for theta in xfrange(0, 180, deltheta):                                                             # Theta Integration Loop 0-180 degrees
+    for phi in xfrange(phi_range[0], phi_range[1], delphi):                                                                     # Phi Integration Loop 0-360 degrees
+        for theta in xfrange(theta_range[0], theta_range[1], deltheta):                                                             # Theta Integration Loop 0-180 degrees
             eField = RadPatternFunction(theta, phi, *args)                                       # Total E-field at point
             Pthph = eField * np.conjugate(eField)                                                                             # Convert to power
 
@@ -163,16 +99,19 @@ def CalcDirectivity(Efficiency, RadPatternFunction, *args):
     directivity_lin = Pmax / (Psum / (4 * pi))                                                              # Directivity (linear ratio)
     directivity_dBi = 10 * log10(directivity_lin)                                                           # Directivity (dB wrt isotropic)
     Gmax = directivity_dBi
-    if Efficiency < 100:                                                                                    # Gain case
-        dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
-        '''
-        print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
-        print("Efficiency = " + str(Efficiency) + "%")
-        print("Gain = " + str(directivity_dBi) + "dB")
-        '''
-    else:
-        pass                                                                                                   # Directivity case
-        # print("Directivity = " + str(directivity_dBi) + "dBi")
+    
+    if to_print:
+        print("Calculating Directivity for " + RadPatternFunction.__name__)
+        if Efficiency < 100:                                                                                    # Gain case
+            dBdiff = 10 * log10(abs(100 / Efficiency))                                                          # Difference between gain and directivity
+            
+            print("Directivity = " + str(directivity_dBi + dBdiff) + "dBi")                                     # Display what directivity would be for ref.
+            print("Efficiency = " + str(Efficiency) + "%")
+            print("Gain = " + str(directivity_dBi) + "dB")
+            
+        else:
+            pass                                                                                                   # Directivity case
+            print("Directivity = " + str(directivity_dBi) + "dBi")
 
     # print("At Theta = " + str(Thmax) + ", Phi = " + str(Phmax))
 
@@ -191,7 +130,7 @@ if __name__ == "__main__":
 
 
     
-    # freq = 14e9
+    freq = 14e9
     # Er = 3.66                                                           # RO4350B
     # h = 0.101e-3
     # W, L, h, Er = patch.DesignPatch(Er, h, freq)
@@ -199,7 +138,7 @@ if __name__ == "__main__":
     # fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
     # patch.SurfacePlot(fields, freq, W, L, h, Er)
 
-    '''
+    
     W = 10.7e-3
     L = 10.47e-3
     h = 3e-3
@@ -209,7 +148,7 @@ if __name__ == "__main__":
     CalcDirectivity(100, patch.PatchFunction, freq, W, L, h, Er)
     fields = patch.PatchEHPlanePlot(freq, W, L, h, Er)
     patch.SurfacePlot(fields, freq, W, L, h, Er)
-    '''
+    
     
     freq = 14e9
     W = 10.7e-3
