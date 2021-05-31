@@ -6,7 +6,7 @@ import time
 
 # EXPERIMENTE PARAMETERS
 
-PATCH_TOPOLOGY =  'Spiral'# None
+PATCH_TOPOLOGY =  'Spiral2'# None
 NO_OF_GENERATIONS = 25
 NO_OF_PATCHES = 25 # give a perfect square for grid
 
@@ -20,13 +20,13 @@ if 'None' in str(PATCH_TOPOLOGY):
     # only XYZ
     if 'XYZ' in str(PATCH_TOPOLOGY):
         param_opt_range = {'x':{'greater_than':-0.25,'lesser_than':0.25},
-                        'y':{'greater_than':-0.25,'lesser_than':0.25},
-                        'z':{'equal_to':0.},
-                        'A':{'greater_than':0.,'lesser_than':5.},
-                        'beta':{'equal_to':0.},
-                        'W':{'equal_to':10.7e-3},
-                        'L':{'equal_to':10.47e-3},
-                        'h':{'equal_to':3e-3},
+                           'y':{'greater_than':-0.25,'lesser_than':0.25},
+                           'z':{'equal_to':0.},
+                           'A':{'greater_than':0.,'lesser_than':5.},
+                           'beta':{'equal_to':0.},
+                           'W':{'equal_to':10.7e-3},
+                           'L':{'equal_to':10.47e-3},
+                           'h':{'equal_to':3e-3},
                             }
 
     # XYZ + WLH
@@ -90,6 +90,7 @@ PatchArray = PatchAntennaArray(
 
 steps_per_gen = 0
 no_of_generations_done = 0
+
 def fitness_func(solution, solution_idx):
     global steps_per_gen 
     global no_of_generations_done

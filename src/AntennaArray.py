@@ -135,16 +135,16 @@ class PatchAntennaArray():
                     )
         return Gain
 
-    def plot_radiation_pattern(self,save_plot_at=None):
+    def plot_radiation_pattern(self,save_plot_at=None,as_video=False):
         fig = None
         if len(self.c_radiation_pattern) == 0:
             raise Exception("Radiation Pattern hasn't been calculated. call CalculateFieldSumPatch() ")
         else:
-            SurfacePlot(Fields=self.c_radiation_pattern,save_plot=save_plot_at)
+            SurfacePlot(Fields=self.c_radiation_pattern,save_plot=save_plot_at,as_video=as_video)
 
-    def display_array(self):
+    def display_array(self,render_title='Patch Design'):
         print("*******************GENERATED PATCH ARRAY*******************")
-        vis_patch.make_Patch(self.element_array)
+        vis_patch.make_Patch(self.element_array,plot_title=render_title)
 
 if __name__ == "__main__":
     

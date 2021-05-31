@@ -154,7 +154,7 @@ def PatchEHPlanePlot(Freq, W, L, h, Er, isLog=True):
 
     return fields                                                                                               # Return the calculated fields
 
-def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
+def SurfacePlot(Fields,save_plot,as_video=False, Freq=None, W=None, L=None, h=None, Er=None):
     """Plots 3D surface plot over given theta/phi range in Fields by calculating cartesian coordinate equivalent of spherical form."""
 
     print("Processing SurfacePlot...")
@@ -194,13 +194,19 @@ def SurfacePlot(Fields,save_plot, Freq=None, W=None, L=None, h=None, Er=None):
     if save_plot!= None:
         # Animate
         init()
-        plt.show()
-        print("Recording Radiation Video ...")
+        if as_video:
+            plt.show()
+            print("Recording Radiation Video ...")
+            anim = animation.FuncAnimation(fig, animate, init_func=init,
+                                        frames= tqdm(range(360)), interval=20, blit=True)
+            # Save
+            anim.save(save_plot, fps=30, extra_args=['-vcodec', 'libx264'])
+        else:
+            ax.view_init(elev=10., azim=45)
+            plt.tight_layout()
+            plt.savefig(save_plot)
+            plt.show()
 
-        anim = animation.FuncAnimation(fig, animate, init_func=init,
-                                       frames= tqdm(range(360)), interval=20, blit=True)
-        # Save
-        anim.save(save_plot, fps=30, extra_args=['-vcodec', 'libx264'])
     else:
         init()
         plt.show()

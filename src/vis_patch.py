@@ -101,7 +101,7 @@ def mouseMove(event):
         lastPosX = x;
         lastPosY = y;
         
-def make_Patch(element_array):
+def make_Patch(element_array,plot_title='Patch Design'):
     pygame.init()
  
     display = (600,400)
@@ -110,7 +110,6 @@ def make_Patch(element_array):
     gluPerspective(45, (1.0*display[0]/display[1]), 0.1, 50.0)
     glTranslatef(0.0,0.0, -5)
  
-
     while True:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -118,7 +117,10 @@ def make_Patch(element_array):
                 quit()
             mouseMove(event);
 
+        glRotatef(1, 1, 1, 0)
         glClear(GL_COLOR_BUFFER_BIT|GL_DEPTH_BUFFER_BIT)
+
+
 
         S_L = max(np.abs(element_array[:,0]))
         S_B = max(np.abs(element_array[:,1]))
@@ -141,10 +143,10 @@ def make_Patch(element_array):
                         )
             
 
-        
-        pygame.display.set_caption('Patch Design')
+        pygame.display.set_caption(plot_title)
         pygame.display.flip()
         pygame.time.wait(10)
+
 
 
 

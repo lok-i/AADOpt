@@ -11,10 +11,11 @@ if __name__ == "__main__":
     # filename = './experiments/10Patches'
     # filename = './experiments/20PatchWith_WLH'
 
-    filename = filename = './experiments/'+str(NO_OF_PATCHES)+'Patch_'+str(NO_OF_GENERATIONS)+'Gen_'+str(PATCH_TOPOLOGY)
+    filename = './experiments/'+str(NO_OF_PATCHES)+'Patch_'+str(NO_OF_GENERATIONS)+'Gen_'+str(PATCH_TOPOLOGY)
     loaded_ga_instance = pygad.load(filename=filename)
-    loaded_ga_instance.plot_result()
-
+    fig = loaded_ga_instance.plot_result()
+    fig.tight_layout()    
+    fig.savefig('./plots_figs/'+str(NO_OF_PATCHES)+'Patch_'+str(NO_OF_GENERATIONS)+'Gen_'+str(PATCH_TOPOLOGY)+'_GA')
     # print("BEST SOLNS:")
     max_soln = []
     max_fitness = 0
@@ -44,8 +45,12 @@ if __name__ == "__main__":
     PatchArray.CalculateFieldSumPatch(dAngleInDeg=delta_angle_for_integration)
     print('Gain:',PatchArray.get_gain(dAngleInDeg=delta_angle_for_integration))
     print("Generating Radiation Plot...")
-    PatchArray.plot_radiation_pattern(save_plot_at="./plots_figs/"+filename.replace("./experiments","")+".mp4")
+    PatchArray.plot_radiation_pattern()
+    # PatchArray.plot_radiation_pattern(save_plot_at="./plots_figs/"+filename.replace("./experiments",""),
+    #                                   as_video=False)
+
     print("Rendering Antenna Patch...")    
-    PatchArray.display_array()
+
+    PatchArray.display_array(render_title=str(NO_OF_PATCHES)+'Patch_'+str(NO_OF_GENERATIONS)+'Gen_'+str(PATCH_TOPOLOGY))
 
     
