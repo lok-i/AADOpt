@@ -7,9 +7,9 @@
 </p>
 
 <p align="center">
-   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00001.gif">
-   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00002.gif">
-   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00003.gif">
+   <img width="260" height="260" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00001.gif">
+   <img width="260" height="260" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00002.gif">
+   <img width="260" height="260" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00003.gif">
 </p>
 
 ## Installation
