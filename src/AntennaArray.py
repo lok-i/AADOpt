@@ -96,27 +96,25 @@ class PatchAntennaArray():
         thetas = np.arange(0,95,dAngleInDeg,dtype=int)
         phis = np.arange(0,360,dAngleInDeg,dtype=int)
 
-        with tqdm(total=len(thetas)*len(phis)) as pbar:
-            for theta in thetas:
-                for phi in phis:                                                                                                      # For all theta/phi positions
-                    pbar.update(1)
-                    elementSum = 1e-9 + 0j
-                    xff, yff, zff = sph2cart1(999, math.radians(theta), math.radians(phi))                                                  # Find point in far field
+        for theta in thetas:
+            for phi in phis:                                                                                                      # For all theta/phi positions
+                elementSum = 1e-9 + 0j
+                xff, yff, zff = sph2cart1(999, math.radians(theta), math.radians(phi))                                                  # Find point in far field
 
-                    for element in self.element_array:
-                        xlocal = xff - element[0]
-                        ylocal = yff - element[1]                                                                                           # Calculate local position in cartesian
-                        zlocal = zff - element[2]
-                        r, thetaLocal, phiLocal = cart2sph1(xlocal, ylocal, zlocal)                                                         # Convert local position to spherical
+                for element in self.element_array:
+                    xlocal = xff - element[0]
+                    ylocal = yff - element[1]                                                                                           # Calculate local position in cartesian
+                    zlocal = zff - element[2]
+                    r, thetaLocal, phiLocal = cart2sph1(xlocal, ylocal, zlocal)                                                         # Convert local position to spherical
 
-                        patchFunction = PatchFunction(math.degrees(thetaLocal), math.degrees(phiLocal),                                     # Patch element pattern for local theta, phi
-                                        self._freq, element[5], element[6], element[7], self._er)            
+                    patchFunction = PatchFunction(math.degrees(thetaLocal), math.degrees(phiLocal),                                     # Patch element pattern for local theta, phi
+                                    self._freq, element[5], element[6], element[7], self._er)            
 
-                        if patchFunction != 0:                                                                                              # Sum each elements contribution
-                            relativePhase = self.CalculateRelativePhase(element,Lambda, math.radians(theta), math.radians(phi))                 # Find relative phase for current element
-                            elementSum += element[3] * patchFunction * math.e ** ((relativePhase + element[4]) * 1j)                        # Element contribution = Amp * e^j(Phase + Phase Weight)
+                    if patchFunction != 0:                                                                                              # Sum each elements contribution
+                        relativePhase = self.CalculateRelativePhase(element,Lambda, math.radians(theta), math.radians(phi))                 # Find relative phase for current element
+                        elementSum += element[3] * patchFunction * math.e ** ((relativePhase + element[4]) * 1j)                        # Element contribution = Amp * e^j(Phase + Phase Weight)
 
-                    arrayFactor[phi][theta] = elementSum.real
+                arrayFactor[phi][theta] = elementSum.real
             
         self.c_radiation_pattern = arrayFactor
     

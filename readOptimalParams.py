@@ -1,7 +1,7 @@
 import pygad
 import numpy
 from src.AntennaArray import PatchAntennaArray
-from runGA import *
+from config import *
 
 if __name__ == "__main__":
     
