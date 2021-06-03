@@ -4,7 +4,12 @@ import matplotlib.pyplot as plt
 import numpy as np
 from math import cos, sin, sqrt,acos,atan2
 from mpl_toolkits.mplot3d import Axes3D
-  
+from matplotlib import pyplot as plt
+from matplotlib import animation
+from tqdm import tqdm
+
+
+
 def sph2cart1(r, th, phi):
   x = r * cos(phi) * sin(th)
   y = r * sin(phi) * sin(th)
@@ -51,6 +56,14 @@ def PatchFunction(thetaInDeg, phiInDeg, Freq, W, L, h, Er):
 
     if phi == 0:
         phi = 1e-9
+    # print(W)
+
+    if W < 1.e-3:
+        W = 1.0e-3
+    if h < 1.e-3:
+        h = 1.0e-3    
+    if L < 1.e-3:
+        L = 1.0e-3
 
     Ereff = ((Er + 1) / 2) + ((Er - 1) / 2) * (1 + 12 * (h / W)) ** -0.5        # Calculate effictive dielectric constant for microstrip line of width W on dielectric material of constant Er
 
@@ -110,7 +123,6 @@ def GetPatchFields(PhiStart, PhiStop, ThetaStart, ThetaStop, Freq, W, L, h, Er):
 
     return fields
 
-
 def PatchEHPlanePlot(Freq, W, L, h, Er, isLog=True):
     """
     Plot 2D plots showing E-field for E-plane (phi = 0°) and the H-plane (phi = 90°).
@@ -142,22 +154,20 @@ def PatchEHPlanePlot(Freq, W, L, h, Er, isLog=True):
 
     return fields                                                                                               # Return the calculated fields
 
-
-def SurfacePlot(Fields, Freq, W, L, h, Er):
+def SurfacePlot(Fields,save_plot,as_video=False, Freq=None, W=None, L=None, h=None, Er=None):
     """Plots 3D surface plot over given theta/phi range in Fields by calculating cartesian coordinate equivalent of spherical form."""
 
     print("Processing SurfacePlot...")
 
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-
+    # ax = Axes3D(fig)
     phiSize = Fields.shape[0]                                                                                   # Finds the phi & theta range
     thetaSize = Fields.shape[1]
 
     X = np.ones((phiSize, thetaSize))                                                                           # Prepare arrays to hold the cartesian coordinate data.
     Y = np.ones((phiSize, thetaSize))
     Z = np.ones((phiSize, thetaSize))
-
     for phi in range(phiSize):                                                                                  # Iterate over all phi/theta range
         for theta in range(thetaSize):
             e = Fields[phi][theta]
@@ -168,12 +178,40 @@ def SurfacePlot(Fields, Freq, W, L, h, Er):
             Y[phi, theta] = ye
             Z[phi, theta] = ze
 
-    ax.plot_surface(X, Y, Z, color='b')                                                                         # Plot surface
-    plt.ylabel('Y')
-    plt.xlabel('X')                                                                                             # Plot formatting
-    plt.title("Patch: \nW=" + str(W) + " \nL=" + str(L) +  "\nEr=" + str(Er) + " h=" + str(h) + " \n@" + str(Freq) + "Hz")
-    plt.show()
+    def init():
+        ax.plot_surface(X, Y, Z, color='b')                                                                         # Plot surface
+        plt.ylabel('Y')
+        plt.xlabel('X')                                                                                             # Plot formatting
+        if W!=None:
+            plt.title("Patch: \nW=" + str(W) + " \nL=" + str(L) +  "\nEr=" + str(Er) + " h=" + str(h) + " \n@" + str(Freq) + "Hz")
+        return fig,
+    
+    def animate(i):
 
+        ax.view_init(elev=10., azim=i)
+        return fig,
+
+    if save_plot!= None:
+        # Animate
+        init()
+        if as_video:
+            plt.show()
+            print("Recording Radiation Video ...")
+            anim = animation.FuncAnimation(fig, animate, init_func=init,
+                                        frames= tqdm(range(360)), interval=20, blit=True)
+            # Save
+            anim.save(save_plot, fps=30, extra_args=['-vcodec', 'libx264'])
+        else:
+            ax.view_init(elev=10., azim=45)
+            plt.tight_layout()
+            plt.savefig(save_plot)
+            plt.show()
+
+    else:
+        init()
+        plt.show()
+
+    
 
 def DesignPatch(Er, h, Freq):
     """

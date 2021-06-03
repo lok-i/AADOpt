@@ -1,50 +1,40 @@
-# AntennaEvolutionStrategy
-- Undergraduate Project
+# AADOpt
+- A Framework for Antenna Array Design and Synthesis through Optimisation
 
-**Note:** use SciHub to downlaod ieee papers wothout membership. It is like torrent for research papers. [link](https://sci-hub.se/)
+## Installation
+    git clone https://github.com/lok-i/AADOpt
+    cd AADOpt
+    pip3 install -r requirements.txt
+
+## To visualise a given experiment
+
+Set the name and configuration of the experiment that you want to test in the file, config.py file, For example,
+
+    PATCH_TOPOLOGY =  'Spiral2'
+    NO_OF_GENERATIONS = 25
+    NO_OF_PATCHES = 25 
+
+Then simply run the following command, and the experiment file will be loaded from the experiments folder and the results will be displayed
+
+    python3 readOptimalParams.py
+
+## To run a GA optimisation with custom parameters
+
+Set the name and configuration of the experiment that you want to conduct in the file, config.py. Like
+
+    1) GA Optimisation Parameters
+    2) Antena Parameter Ranges
+    3) Topological Distribution Function
+
+Based on the current configuration in the config.py, the optimisation will then be conducted and the results shall be saved to ./experiments upon running the following command
+
+    python3 runGA.py 
+
+Note: For implementing your own antenna distribution topology, implement a class title _class topolocy_name_ in the file ./src/PatchTopology.py and requireed additions in ./config.py. Refer the same files for pre-implemented examples.  
 
 
-## Our Colab NoteBook 
-
-* [PyGad implementation](https://colab.research.google.com/drive/1wfRIfIQ9J09M5KPhRUbxjmhLuxggXoKx?usp=sharing)
-
-## Evolutionary Strategy:
-
-* [Rapid Re-Evolution of an X-Band Antenna for Nasa’s Space Technology 5 Mission](https://link.springer.com/chapter/10.1007/0-387-28111-8_5)
-
-## Antena Design by GAN's:
-
-* [A Novel Antenna Pattern Design Using Generative Adversarial Network](https://ieeexplore.ieee.org/document/8662012/)
-
-## References and Resources:
-
-## ReflectArray Antenna
-
-* [Curve Learning](https://www.hindawi.com/journals/ijap/2016/8764967/)
-* [Param Learning](https://www.tandfonline.com/doi/abs/10.1080/02726343.2012.645423?journalCode=uemg20)
-* [Hybrid evol](https://ieeexplore.ieee.org/document/1629608)
 
 
-## Atenna Basics:
 
-* [Basic Antennas and their Raidiation patterns](https://www.usna.edu/ECE/ee434/Handouts/EE302%20Lesson%2013%20Antenna%20Fundamentals.pdf)
-* [^^ The math](https://its-wiki.no/images/2/2b/RadiationPattern.pdf)
 
-### Blogs:
-* [6 part Blog of John Grant](https://johngrant.medium.com/antenna-arrays-and-python-introduction-8e3b612ecdfb)
-* [Square Patch Antena Theory](https://johngrant.medium.com/antenna-arrays-and-python-square-patch-element-6bd3445f39d5)
-* [^^ Full code of the SPA](https://gist.github.com/johngrantuk/73e0742fac6a6a17e7b42ae34cfde56e)
-* [Directivity Calulcation, Theory and Code](https://medium.com/python-pandemonium/antenna-arrays-and-python-calculating-directivity-84a2cfea0739)
-* [For more of Joe Grant's Implementations](https://gist.github.com/johngrantuk?direction=desc&sort=updated)
-
-### ES:
-* [evostr](https://github.com/alirezamika/evostra)
-* [openai](https://github.com/openai/evolution-strategies-starter)
-
-### Genetic Algo:
-
-* [GeneticAlgorithmPython](https://github.com/ahmedfgad/GeneticAlgorithmPython)
-* [Genetic Algorithms with Python](https://github.com/handcraftsman/GeneticAlgorithmsWithPython)
-* [mchgenalg](https://github.com/chovanecm/python-genetic-algorithm)
-* [Genetic algorithm](https://github.com/kburnik/genetic-algorithm)
 
