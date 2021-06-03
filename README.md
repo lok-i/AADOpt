@@ -8,7 +8,7 @@
 
 ## To visualise a given experiment
 
-Set the name and configuration of the experiment that you want to test in the file, config.py file, For example,
+Set the name and configuration of the experiment that you want to test in the file, [config.py](https://github.com/lok-i/AADOpt/blob/main/config.py) file, For example,
 
     PATCH_TOPOLOGY =  'Spiral2'
     NO_OF_GENERATIONS = 25
@@ -30,7 +30,7 @@ Based on the current configuration in the config.py, the optimisation will then 
 
     python3 runGA.py 
 
-Note: For implementing your own antenna distribution topology, implement a class title _class topolocy_name_ in the file ./src/PatchTopology.py and requireed additions in ./config.py. Refer the same files for pre-implemented examples.  
+Note: For implementing your own antenna distribution topology, implement a class title _class topolocy_name_ in the file [./src/PatchTopology.py](https://github.com/lok-i/AADOpt/blob/main/src/PatchTopology.py) and requireed additions in [config.py](https://github.com/lok-i/AADOpt/blob/main/config.py). Refer the same files for pre-implemented examples.  
 
 
 
