@@ -1,5 +1,16 @@
 # AADOpt
 - A Framework for Antenna Array Design and Synthesis through Optimisation
+<p align="center">
+   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/100Patch_20Gen_None.gif">
+   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/25Patch_25Gen_Spiral2.gif">
+   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/20Patch_100Gen_None.gif">
+</p>
+
+<p align="center">
+   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00001.gif">
+   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00002.gif">
+   <img width="260" height="280" src="https://github.com/lok-i/AADOpt/blob/main/plots_figs/BTP_00003.gif">
+</p>
 
 ## Installation
     git clone https://github.com/lok-i/AADOpt
@@ -30,7 +41,7 @@ Based on the current configuration in the config.py, the optimisation will then 
 
     python3 runGA.py 
 
-Note: For implementing your own antenna distribution topology, implement a class title _class topolocy_name_ in the file [./src/PatchTopology.py](https://github.com/lok-i/AADOpt/blob/main/src/PatchTopology.py) and requireed additions in [config.py](https://github.com/lok-i/AADOpt/blob/main/config.py). Refer the same files for pre-implemented examples.  
+Note: For implementing your own antenna distribution topology, implement a class title _class topolocy_name_ in the file [./src/PatchTopology.py](https://github.com/lok-i/AADOpt/blob/main/src/PatchTopology.py) and requireed additions in [config.py](https://github.com/lok-i/AADOpt/blob/main/config.py). Refer the same files for pre-implemented examples. For a detailed overview chekcout out our [preprint/mid-report](https://drive.google.com/file/d/1wmBMNA6xBBsBHSVZ0LFgiTTHsTuxB1yn/view?usp=sharing)
 
 
 
